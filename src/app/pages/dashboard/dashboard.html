@@ -1,0 +1,36 @@
+<mat-drawer-container class="dashboard-container">
+  <mat-drawer #drawer mode="side" [opened]="false">
+    <div class="dashboard-nav-header">
+      <h3 class="dashboard-nav-title">Navigation</h3>
+    </div>
+    <nav class="dashboard-nav" aria-label="Hauptnavigation">
+      <a mat-button routerLink="/dashboard">Dashboard</a>
+      <a mat-button routerLink="/settings">Settings</a>
+    </nav>
+
+  </mat-drawer>
+  <mat-drawer-content>
+    <mat-toolbar color="primary">
+      <button mat-icon-button aria-label="Menü öffnen oder schließen" (click)="drawer.toggle()">
+        @if (drawer.opened) {
+        <mat-icon>close</mat-icon>
+        } @else {
+        <mat-icon>menu</mat-icon>
+        }
+
+      </button>
+      <span>Dashboard</span>
+      <span class="spacer"></span>
+      <button mat-icon-button aria-label="Benachrichtigungen">
+
+        <mat-icon>notifications</mat-icon>
+      </button>
+    </mat-toolbar>
+    <section class="dashboard-section">
+
+    </section>
+    <mat-footer>
+      <p>© 2024 My Company</p>
+    </mat-footer>
+  </mat-drawer-content>
+</mat-drawer-container>

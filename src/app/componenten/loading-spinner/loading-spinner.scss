@@ -1,0 +1,50 @@
+.loading-spinner-overlay {
+	position: fixed;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 9999;
+}
+
+.loading-spinner {
+	display: grid;
+	min-height: 8rem;
+	place-items: center;
+	color: #2563eb;
+}
+
+.spinner {
+	display: block;
+	width: 3rem;
+	height: 3rem;
+	animation: spinner-rotate 0.8s linear infinite;
+}
+
+.spinner svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+
+@keyframes spinner-rotate {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.spinner {
+		animation-duration: 2s;
+	}
+}
