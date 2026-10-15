@@ -5,7 +5,6 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 @use 'styles/var.scss' as var;
-
 html {
   height: 100%;
   @include mat.theme(
@@ -42,4 +41,12 @@ body {
 body {
   margin: 0;
   font-family: 'Fira Code', monospace, sans-serif;
+}
+
+.sub-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }

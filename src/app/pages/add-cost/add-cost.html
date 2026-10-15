@@ -1,0 +1,84 @@
+<section class="page">
+  <div class="sub-header-container">
+    <app-sub-header title="Zur Monatsübersicht" subHeaderPath="/doc-view" iconName="arrow_back"></app-sub-header>
+    <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+  </div>
+
+  <h1>Eintrag hinzufügen</h1>
+  <form class="entry-form" (ngSubmit)="addCost()">
+    <label for="costType">Art des Eintrags</label>
+    <select
+      id="costType"
+      name="costType"
+      [ngModel]="costType()"
+      (ngModelChange)="costType.set($event)"
+    >
+      <option value="income">Einnahme</option>
+      <option value="expense">Ausgabe</option>
+    </select>
+
+    <label for="amount">Betrag (€)</label>
+    <input
+      id="amount"
+      name="amount"
+      type="number"
+      min="0.01"
+      step="0.01"
+      required
+      [ngModel]="amount()"
+      (ngModelChange)="updateAmount($event)"
+    >
+
+    <label for="description">Beschreibung</label>
+    <input
+      id="description"
+      name="description"
+      type="text"
+      required
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+    >
+
+    <label for="category">Kategorie</label>
+    <input
+      id="category"
+      name="category"
+      type="text"
+      placeholder="z. B. Miete, Gehalt, Einkauf"
+      [ngModel]="category()"
+      (ngModelChange)="category.set($event)"
+    >
+
+    <label for="month">Monat</label>
+    <input
+      id="month"
+      name="month"
+      type="month"
+      required
+      [ngModel]="month()"
+      (ngModelChange)="month.set($event)"
+    >
+
+    <label class="recurring-option" for="isRecurring">
+      <input
+        id="isRecurring"
+        name="isRecurring"
+        type="checkbox"
+        [ngModel]="isRecurring()"
+        (ngModelChange)="isRecurring.set($event)"
+      >
+      Jeden Monat ab diesem Monat wiederholen
+    </label>
+    @if (errorMessage()) {
+      <p class="error-message" role="alert">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="success-message" role="status">{{ successMessage() }}</p>
+    }
+
+    <div class="button-section">
+      <app-button-components [buttonType]="'submit'" label="Speichern" iconName="save"></app-button-components>
+    </div>
+  </form>
+</section>

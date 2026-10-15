@@ -1,0 +1,336 @@
+@use '../../../styles/_mixings.scss' as mixins;
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.sub-header-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.overview-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin: 0.5rem 0 0.5rem;
+
+  h1,
+  p {
+    margin: 0;
+  }
+
+  p {
+    margin-top: 0.4rem;
+    color: #596579;
+  }
+}
+
+.monthly-heading {
+  margin: 1.0rem 1rem;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.month-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  label {
+    font-weight: 600;
+    font-size: clamp(0.85rem, 2.5vw, 1.25rem);
+  }
+
+  input {
+    min-height: 1.5rem;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid #aeb8c6;
+    border-radius: 0.4rem;
+    font: inherit;
+    font-size: clamp(0.85rem, 2.5vw, 1.25rem);
+  }
+  .search-input {
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    width: 100%;
+  }
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+
+.summary-card {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d8dee8;
+  border-radius: 0.65rem;
+  background: #fff;
+
+  h2 {
+    margin: 0;
+    color: #4d596b;
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+.income-card {
+  border-top: 4px solid #218653;
+}
+
+.expense-card {
+  border-top: 4px solid #bd3c42;
+}
+
+.balance-card {
+  border-top: 4px solid #4766a8;
+}
+
+.month-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: 0.75rem;
+  max-width: 600px;
+  margin: 0.5rem 0 0.5rem;
+
+    @include mixins.Brackpoints('small') {
+     max-width: 320px;
+    }
+}
+
+.entries-section {
+  margin: 1.5rem 0;
+}
+
+.entries-heading {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.entry-grid {
+  @include mixins.scrollbars();
+  display: grid;
+  overflow-y: auto;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0 0.75rem 0 0;
+  list-style: none;
+  max-height: 300px;
+}
+
+.entry-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d8dee8;
+  border-radius: 0.65rem;
+  background: #fff;
+}
+
+.entry-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.entry-title {
+  margin: 0;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.entry-meta {
+  margin: 0;
+  color: #596579;
+  font-size: 0.9rem;
+}
+
+.entry-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.entry-total {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 2px solid #aeb8c6;
+  border-radius: 0.65rem;
+  background: #f4f6f9;
+  font-weight: 700;
+
+  p {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+  }
+}
+
+.amount {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.income-badge {
+  background: #e3f4e9;
+  color: #145c34;
+}
+
+.expense-badge {
+  background: #fde9e9;
+  color: #8f2027;
+}
+
+.month-picker input:focus-visible {
+  outline: 1px solid #315da8;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 2rem 1rem;
+  color: #596579;
+  text-align: center;
+}
+
+.edit-entry-section {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid #aeb8c6;
+  border-radius: 0.65rem;
+  background: #f8fafc;
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 1.15rem;
+  }
+}
+
+.edit-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.edit-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #4d596b;
+}
+
+.edit-form-actions,
+.entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.edit-form-actions {
+  grid-column: 1 / -1;
+}
+
+.error-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #a3222a;
+}
+
+.paused-section {
+  margin-top: 2rem;
+
+  h2 {
+    font-size: 1.15rem;
+  }
+
+  ul {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d8dee8;
+    border-radius: 0.5rem;
+    background: #fff;
+  }
+}
+
+@include mixins.Brackpoints('compact') {
+  .page {
+    padding: 1rem;
+  }
+
+  .overview-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .summary-cards {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .summary-card {
+    padding: 0.8rem 1rem;
+  }
+
+  .summary-card p {
+    font-size: 1.3rem;
+  }
+
+  .entry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .paused-section li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}

@@ -1,0 +1,120 @@
+@use '../../../styles/_mixings.scss' as mixins;
+
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.sub-header-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+h1 {
+  margin: 2rem 0 2rem;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.entry-form {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.25rem;
+  border: 1px solid #d8dee8;
+  border-radius: 0.65rem;
+  background: #fff;
+
+  label {
+    margin-top: 0.55rem;
+    font-weight: 600;
+  }
+
+  input:not([type='checkbox']),
+  select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #aeb8c6;
+    border-radius: 0.4rem;
+    background: #fff;
+    font: inherit;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  button:focus-visible {
+    outline: 3px solid #315da8;
+    outline-offset: 2px;
+  }
+
+  .button-section {
+    display: flex;
+    justify-content: center;
+  }
+
+  button {
+    min-height: 2.8rem;
+    margin-top: 0.65rem;
+    border: 0;
+    border-radius: 0.4rem;
+    background: #315da8;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #244b8e;
+  }
+}
+
+button {
+  display: block;
+  margin-top: 0.55rem;
+  font-weight: 600;
+
+  @include mixins.Brackpoints('small') {
+    span{
+      display: none;
+    };
+  }
+}
+
+.entry-form .recurring-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  font-weight: 500;
+
+  input {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+}
+
+.error-message {
+  display: block;
+  margin: 0.25rem 0 0;
+  color: #a3222a;
+  text-align: center;
+}
+
+.success-message {
+  display: block;
+  margin: 0.25rem 0 0;
+  color: #437b38;
+  font-weight: 600;
+  background-color: aquamarine;
+  text-align: center;
+  padding: 5px;
+}
+
+@include mixins.Brackpoints('small') {
+  .page {
+    padding: 1rem;
+  }
+}

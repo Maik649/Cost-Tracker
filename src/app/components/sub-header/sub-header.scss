@@ -1,0 +1,20 @@
+@use '../../../styles/_mixings.scss' as mixins;
+
+.sub-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+
+  h2 {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    @include mixins.Brackpoints('small') {
+      display: none;
+    }
+  }
+
+  @include mixins.Brackpoints('small') {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

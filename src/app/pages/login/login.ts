@@ -2,10 +2,12 @@ import { form, FormField, email, minLength, maxLength, required } from '@angular
 import { Component, inject, signal } from '@angular/core';
 import { env } from '../../../environments/environment';
 import { Router } from '@angular/router';
-import { LoadingSpinner } from '../../componenten/loading-spinner/loading-spinner';
+import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
+
+
 @Component({
   imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule],
   standalone: true,
@@ -14,6 +16,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './login.html',
   providers: [],
 })
+
+
 export class Login {
   private readonly router = inject(Router);
   message = signal('');

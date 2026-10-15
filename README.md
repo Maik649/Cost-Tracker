@@ -1,59 +1,59 @@
-# TimeTracker
+# Cost Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+Kleine Angular-Web-App zum Erfassen und Auswerten von monatlichen Einnahmen und Ausgaben. Alle Daten bleiben lokal im Browser (`localStorage`), es gibt kein Backend.
 
-## Development server
+## Funktionen
 
-To start a local development server, run:
+- **Einträge hinzufügen:** Einnahmen und Ausgaben mit Betrag, Beschreibung und Kategorie, einmalig oder monatlich wiederkehrend.
+- **Monatsauswahl:** Jahr wählen und über ein Raster aus Monats-Buttons zum gewünschten Monat springen.
+- **Monatsdetails:** Einnahmen, Ausgaben und Saldo des Monats sowie alle Einträge als responsives Karten-Grid (mobil optimiert).
+- **Suche:** Filtert die Einträge nach Beschreibung oder Kategorie und zeigt die Gesamtsumme der Treffer, z. B. wie viel du im Monat für „Tabak“ ausgegeben hast.
+- **Bearbeiten und Löschen:** Beträge ändern (bei Wiederholungen mit Gültigkeit ab einem Monat), Einträge löschen.
+- **Wiederholungen pausieren:** Monatliche Einträge pausieren und später wieder aktivieren.
+- **Datensicherung:** Unter *Settings* lassen sich alle Einträge als JSON-Datei exportieren und wieder importieren, etwa nach einer Neuinstallation des Browsers.
 
-```bash
-ng serve
-```
+## Seiten
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+| Route | Beschreibung |
+| --- | --- |
+| `/` | Login |
+| `/dashboard` | Startseite mit Navigation |
+| `/add-kosten` | Neuen Eintrag anlegen |
+| `/doc-view` | Monatsübersicht, Suche, Bearbeiten |
+| `/settings` | Einstellungen und Backup/Import |
 
-## Code scaffolding
+## Technik
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Angular 22 (Standalone Components, Signals) und Angular Material
+- Speicherung im `localStorage` unter dem Schlüssel `lastCost`
+- Datenmodell und Backup-Logik in `src/app/models/cost-entry.ts`
 
-```bash
-ng generate component component-name
-```
+## Erste Schritte
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Voraussetzung: [Node.js](https://nodejs.org/) und npm.
 
 ```bash
-ng test
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+Die App läuft dann unter `http://localhost:4200/`.
 
-For end-to-end (e2e) testing, run:
+## Befehle
 
-```bash
-ng e2e
-```
+| Befehl | Zweck |
+| --- | --- |
+| `npm start` | Entwicklungsserver starten |
+| `npm run build` | Produktions-Build nach `dist/` |
+| `npm test` | Unit-Tests mit Vitest |
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Backup und Import
 
-## Additional Resources
+1. **Export:** *Settings* → „Backup exportieren“ lädt `timetracker-backup-JJJJ-MM-TT.json` herunter.
+2. **Import:** *Settings* → „Backup importieren“ und die JSON-Datei auswählen. Die Datei wird geprüft, danach werden die aktuellen Einträge nach Bestätigung **ersetzt**.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Da die Daten nur im Browser liegen, gehen sie beim Löschen der Browserdaten verloren. Erstelle deshalb regelmäßig ein Backup.
+
+## Hinweis
+
+Der Login ist nur eine einfache Eingabeprüfung im Frontend und keine echte Absicherung der Daten.

@@ -1,0 +1,40 @@
+.page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.sub-header-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.settings-card {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border: 1px solid #d8dee8;
+  border-radius: 0.65rem;
+  background: #fff;
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+  }
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.backup-error {
+  color: #a3222a;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 1rem;
+  }
+}

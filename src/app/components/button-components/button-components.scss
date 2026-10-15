@@ -1,0 +1,71 @@
+@use '../../../styles/_mixings.scss' as mixins;
+
+:host {
+  display: inline-flex;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #64748b;
+  border-radius: 0.4rem;
+  background: #fff;
+  color: #26364a;
+  font: inherit;
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background: #f1f4f8;
+}
+
+.button--primary {
+  border-color: #244b8e;
+  background: #315da8;
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: #244b8e;
+}
+
+.button--danger {
+  border-color: #9d252b;
+  color: #8f2027;
+}
+
+.button--danger:hover {
+  background: #fde9e9;
+}
+
+.button:focus-visible {
+  outline: 3px solid #315da8;
+  outline-offset: 2px;
+}
+
+.button mat-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+.button {
+  @include mixins.Brackpoints('small'){
+    width: 100%;
+    .button--monthButton {
+      max-width: 200px;
+      span {
+        text-align: center;
+        display: block;
+      }
+    }
+  }
+}
