@@ -1,7 +1,7 @@
 import { form, FormField, email, minLength, maxLength, required } from '@angular/forms/signals';
 import { Component, inject, signal } from '@angular/core';
 import { env } from '../../../environments/environment';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 
 
 @Component({
-  imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule],
+  imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule, RouterLink],
   standalone: true,
   selector: 'app-login',
   styleUrls: ['./login.scss'],

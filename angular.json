@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "timeTracker": {
+    "CostTracker": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "timeTracker:build:production"
+              "buildTarget": "CostTracker:build:production"
             },
             "development": {
-              "buildTarget": "timeTracker:build:development"
+              "buildTarget": "CostTracker:build:development"
             }
           },
           "defaultConfiguration": "development"

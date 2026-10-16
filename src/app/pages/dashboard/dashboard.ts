@@ -15,7 +15,7 @@ import { ButtonComponents } from '../../components/button-components/button-comp
 })
 export class Dashboard {
   buttons = [
-    { label: 'Document Viewer', routerLink: '/doc-view' },
-    { label: 'Add Kosten', routerLink: '/add-kosten' },
+    { label: 'Kosten Übersicht', routerLink: '/doc-view' },
+    { label: 'Hinzufügen Kosten', routerLink: '/add-kosten' },
   ];
 }
