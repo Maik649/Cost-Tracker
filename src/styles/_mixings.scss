@@ -1,4 +1,3 @@
-@use './_var.scss' as var;
 
 @mixin Brackpoints($breakpoint) {
   @if $breakpoint == 'small' {
