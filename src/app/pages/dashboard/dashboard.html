@@ -5,25 +5,26 @@
     </div>
   </mat-drawer>
   <mat-drawer-content>
-    <mat-toolbar color="primary">
-      <!-- <button mat-icon-button aria-label="Menü öffnen oder schließen" (click)="drawer.toggle()">
-        @if (drawer.opened) {
+    <!-- <button mat-icon-button aria-label="Menü öffnen oder schließen" (click)="drawer.toggle()">
+      @if (drawer.opened) {
         <mat-icon>close</mat-icon>
         } @else {
-        <mat-icon>menu</mat-icon>
-        }
-
-      </button> -->
-      <span>Dashboard</span>
-      <span class="spacer"></span>
-     <nav class="dashboard-nav" aria-label="Hauptnavigation">
-      <a class="secondary-btn" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
-      <a class="secondary-btn" routerLink="/"> <mat-icon>logout</mat-icon>Logout</a>
-    </nav>
-    </mat-toolbar>
-    <section class="dashboard-section">
-      <div class="dashboard-buttons">
-        <app-button-components
+          <mat-icon>menu</mat-icon>
+          }
+          
+        </button> -->
+        @if(auth.isAuthenticated()){
+          <span>Dashboard</span>
+          <mat-toolbar color="primary">
+        <span class="spacer"></span>
+        <nav class="dashboard-nav" aria-label="Hauptnavigation">
+          <a class="secondary-btn" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
+          <button type="button" class="secondary-btn" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</button>
+        </nav>
+      </mat-toolbar>
+        <section class="dashboard-section">
+          <div class="dashboard-buttons">
+            <app-button-components
           *ngFor="let button of buttons"
           class="dashboard-button"
           [routerLink]="button.routerLink"
@@ -31,6 +32,11 @@
         </app-button-components>
       </div>
     </section>
+    }@else {
+        <span>Bitte einloggen</span>
+        <a routerLink="/">Login</a>
+      }
 
+    
   </mat-drawer-content>
 </mat-drawer-container>

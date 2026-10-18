@@ -45,7 +45,7 @@
     </p>
     }
     <button type="submit" class="primary-btn" [disabled]="loading()">Login</button>
-    <a routerLink="/dashboard" class="primary-btn">Gast Login</a>
+    <button type="button" class="primary-btn" (click)="continueAsGuest()">Gast Login</button>
   </form>
   @if (loading()) {
   <app-loading-spinner />

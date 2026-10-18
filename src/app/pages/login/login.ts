@@ -1,15 +1,16 @@
 import { form, FormField, email, minLength, maxLength, required } from '@angular/forms/signals';
 import { Component, inject, signal } from '@angular/core';
 import { env } from '../../../environments/environment';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 
 @Component({
-  imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule, RouterLink],
+  imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule],
   standalone: true,
   selector: 'app-login',
   styleUrls: ['./login.scss'],
@@ -20,6 +21,8 @@ import { CommonModule } from '@angular/common';
 
 export class Login {
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+  ifLogin = signal(false);
   message = signal('');
   messageType = signal<'error' | 'success' | ''>('');
   submitted = signal(false);
@@ -56,13 +59,21 @@ export class Login {
     this.loading.set(true);
     this.message.set('Login erfolgreich.');
     this.messageType.set('success');
+    this.auth.login();
 
     await new Promise<void>((resolve) => setTimeout(resolve, 700));
     const navigated = await this.router.navigateByUrl('/dashboard');
     if (!navigated) {
       this.loading.set(false);
+      this.ifLogin.set(true);
     }
   }
+
+  async continueAsGuest(): Promise<void> {
+    this.auth.login();
+    await this.router.navigateByUrl('/dashboard');
+  }
+
    inForm = form(this.loginModel, (schemaPath) => {
   required(schemaPath.email, {
     message: 'E-Mail ist erforderlich.'
@@ -85,4 +96,3 @@ export class Login {
   });
 });
 }
-
