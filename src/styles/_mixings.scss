@@ -1,44 +1,46 @@
-
 @mixin Brackpoints($breakpoint) {
-  @if $breakpoint == 'small' {
+  @if $breakpoint =='small' {
     @media (max-width: 600px) {
       @content;
     }
-  } @else if $breakpoint == 'compact' {
+  }
+
+  @else if $breakpoint =='compact' {
     @media (max-width: 700px) {
       @content;
     }
-  } @else if $breakpoint == 'medium' {
+  }
+
+  @else if $breakpoint =='medium' {
     @media (max-width: 960px) {
       @content;
     }
-  } @else if $breakpoint == 'large' {
+  }
+
+  @else if $breakpoint =='large' {
     @media (max-width: 1280px) {
       @content;
     }
   }
 }
 
-
-@mixin scrollbars(
-  $size: 9px,
+@mixin scrollbars($size: 9px,
   $foreground-color: #696969,
-  $background-color: #fcf9f9
-) {
-  // For Chrome & Safari
+  $background-color: #fcf9f9) {
+
   &::-webkit-scrollbar-thumb {
     background: $foreground-color;
     border-radius: $size;
   }
-&::-webkit-scrollbar
-{
-  width: $size;
-  border-radius: $size;
-  background-color: $background-color;
-}
 
- &::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+  &::-webkit-scrollbar {
+    width: $size;
+    border-radius: $size;
+    background-color: $background-color;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
     border-radius: $size;
     background: $background-color;
   }

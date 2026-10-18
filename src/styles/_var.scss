@@ -7,34 +7,76 @@
   $info-color: #17a2b8;
   $light-color: #f8f9fa;
   $dark-color: #343a40;
+  $font-family: 'Golos Text';
+  $color-text: #241f1f;
+  $font-size-base: 16px;
+  $line-height-base: 1.5;
+  $max-width: 1440px;
 
-.primary-btn {
-  background-color: $primary-color;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-}
-
-.secondary-btn {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  gap: 0.5rem;
-  font-size: clamp(0.8rem, 1vw, 1rem);
-  background-color: $primary-color;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  text-decoration: none;
-  @include mixins.Brackpoints('small') {
-   gap: 0.10rem;
-   padding: 0.25rem 0.5rem;
+  .backround-gradient {
+    background-image: linear-gradient(to bottom , rgb(184, 182, 182), rgb(105, 105, 105));
+    transition: background-image 0.3s ease-in-out;
   }
-}
 
+  .button-gradient {
+    display: flex;
+    align-items: center;
+    justify-content: center;  
+    background-image: linear-gradient(to bottom left, rgb(149, 223, 241), rgb(72, 73, 139));
+    min-height: 0;
+    border: none;
+    padding: 1rem 0;
+    border-radius: 0.25rem;
+    a:-webkit-any-link {
+      text-decoration: none;
+    }
+    & span {
+      color: $color-text;
+    }
+  }
+
+  .button-gradient:hover {
+    background-image: linear-gradient(to bottom left, rgb(72, 73, 139), rgb(149, 223, 241));
+    cursor: pointer;
+  }
+
+  .primary-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $primary-color;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: clamp(0.8rem, 1vw, 1.25rem);
+    font-weight: 900;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .secondary-btn {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 0.5rem;
+    font-size: clamp(0.8rem, 1vw, 1.25rem);
+    background-color: $primary-color;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    text-decoration: none;
+
+    @include mixins.Brackpoints('small') {
+      gap: 0.10rem;
+      padding: 0.25rem 0.5rem;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family;
+    color: $color-text;
+  }

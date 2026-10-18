@@ -1,51 +1,37 @@
 <section>
   <h1>Login</h1>
-  <form novalidate (submit)="onSubmit($event)">
+  <form class="backround-gradient" novalidate (submit)="onSubmit($event)">
     @if (submitted() && inForm.email().invalid()) {
     @for (error of inForm.email().errors(); track $index) {
     <span class="invalid">{{ error.message }}</span>
     }
     }
-    <mat-form-field>
+    <mat-form-field >
       <mat-label for="email">E-Mail:</mat-label>
       <input type="email" id="email" [formField]="inForm.email"
         [class.invalid]="submitted() && inForm.email().invalid()" [class.valid]="submitted() && inForm.email().valid()"
         matInput>
     </mat-form-field>
-    <!--
-    <label for="email">E-Mail:</label>
-    <input
-      type="email"
-      id="email"
-      [formField]="inForm.email"
-      [class.invalid]="submitted() && inForm.email().invalid()"
-      [class.valid]="submitted() && inForm.email().valid()"> -->
-
     @if (submitted() && inForm.password().invalid()) {
     @for (error of inForm.password().errors(); track $index) {
     <span class="invalid">{{ error.message }}</span>
     }
     }
 
-    <mat-form-field>
+    <mat-form-field >
       <mat-label for="password">Passwort:</mat-label>
-      <input type="password" id="password" autocomplete="false" [formField]="inForm.password"
+      <input  type="password" id="password" autocomplete="false" [formField]="inForm.password"
         [class.invalid]="submitted() && inForm.password().invalid()"
         [class.valid]="submitted() && inForm.password().valid()" matInput>
     </mat-form-field>
-<!--
-    <label for="password">Passwort:</label>
-    <input type="password" id="password" autocomplete="false" [formField]="inForm.password"
-      [class.invalid]="submitted() && inForm.password().invalid()"
-      [class.valid]="submitted() && inForm.password().valid()">
- -->
+
     @if (message()) {
     <p [class.invalid]="messageType() === 'error'" [class.valid]="messageType() === 'success'">
       {{ message() }}
     </p>
     }
-    <button type="submit" class="primary-btn" [disabled]="loading()">Login</button>
-    <button type="button" class="primary-btn" (click)="continueAsGuest()">Gast Login</button>
+    <button type="submit" class=" button-gradient" [disabled]="loading()">Login</button>
+    <button type="button" class=" button-gradient" (click)="continueAsGuest()">Gast Login</button>
   </form>
   @if (loading()) {
   <app-loading-spinner />

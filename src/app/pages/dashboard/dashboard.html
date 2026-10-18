@@ -13,30 +13,24 @@
           }
           
         </button> -->
-        @if(auth.isAuthenticated()){
-          <mat-toolbar color="primary">
-          <span>Dashboard</span>
-        <span class="spacer"></span>
-        <nav class="dashboard-nav" aria-label="Hauptnavigation">
-          <a class="secondary-btn" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
-          <button type="button" class="secondary-btn" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</button>
-        </nav>
-      </mat-toolbar>
-        <section class="dashboard-section">
-          <div class="dashboard-buttons">
-            <app-button-components
-          *ngFor="let button of buttons"
-          class="dashboard-button"
-          [routerLink]="button.routerLink"
+    @if(auth.isAuthenticated()){
+      <mat-toolbar class="background-gradient" >
+      <div class="sub-header-content-wrapper"> 
+      <span>Dashboard</span>
+      <span class="spacer"></span>
+      <nav class="dashboard-nav" aria-label="Hauptnavigation">
+        <a class="button-gradient" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
+        <a class="button-gradient" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</a>
+      </nav>
+    </div>
+    </mat-toolbar>
+    <section class="dashboard-section background-gradient">
+      <div class="dashboard-buttons">
+        <app-button-components *ngFor="let button of buttons" class="button-gradient" [routerLink]="button.routerLink"
           [label]="button.label">
         </app-button-components>
       </div>
     </section>
-    }@else {
-        <span>Bitte einloggen</span>
-        <a routerLink="/">Login</a>
-      }
-
-    
+    }
   </mat-drawer-content>
 </mat-drawer-container>

@@ -1,9 +1,11 @@
 <section class="page">
   <div class="sub-header-container">
+    <div class="sub-header-content-wrapper">
     <app-sub-header title="Zur Monatsübersicht" subHeaderPath="/doc-view" iconName="arrow_back"></app-sub-header>
     <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+    </div>
   </div>
-
+  <div class="content-wrapper">
   <h1>Eintrag hinzufügen</h1>
   @if (loadingEntries()) {
     <p role="status">Gespeicherte Einträge werden geladen …</p>
@@ -70,7 +72,7 @@
         [ngModel]="isRecurring()"
         (ngModelChange)="isRecurring.set($event)"
       >
-      Jeden Monat ab diesem Monat wiederholen
+      Monat wiederholen
     </label>
     @if (errorMessage()) {
       <p class="error-message" role="alert">{{ errorMessage() }}</p>
@@ -81,7 +83,8 @@
     }
 
     <div class="button-section">
-      <app-button-components [buttonType]="'submit'" [label]="saving() ? 'Speichert …' : 'Speichern'" iconName="save"></app-button-components>
+      <app-button-components [variant]="'button-gradient'" [buttonType]="'submit'" [label]="saving() ? 'Speichert …' : 'Speichern'" iconName="save"></app-button-components>
     </div>
   </form>
+  </div>
 </section>

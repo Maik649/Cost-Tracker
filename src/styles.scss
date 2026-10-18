@@ -5,18 +5,16 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 @use 'styles/var.scss' as var;
+@use 'styles/_mixings.scss' as mixins;
+
 html {
   height: 100%;
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$azure-palette,
+  @include mat.theme((color: (primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: Roboto,
       density: 0,
-    )
-  );
+    ));
 }
 
 body {
@@ -36,6 +34,7 @@ body {
   margin: 0;
   height: 100%;
 }
+
 /* You can add global styles to this file, and also import other style files */
 
 body {
@@ -47,6 +46,54 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   gap: 1rem;
-  margin-bottom: 1rem;
+  background-image: linear-gradient(to bottom right, #ffffff, #d8dee8);
+
+  @include mixins.Brackpoints('small') {
+    justify-content: center;
+    flex-direction: column;
+  }
 }
+
+.sub-header-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var.$max-width;
+  padding: 0 1rem;
+  @include mixins.Brackpoints('small') {
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+  }
+}
+
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 4rem 0 0 0;
+
+  @include mixins.Brackpoints('small') {
+    padding: 8rem 0 0 0;
+  }
+
+  & .content-wrapper  {
+    padding: 0 1rem;
+    width: calc(100vw - 2rem);
+    max-width: var.$max-width;
+  }
+}
+
+.content-wrapper  {
+  width: 100%;
+  max-width: var.$max-width;
+}
+

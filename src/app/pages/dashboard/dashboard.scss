@@ -22,6 +22,7 @@ mat-drawer {
   background-color: var.$primary-color;
   color: white;
   margin: 0;
+
   & .dashboard-nav-title {
     margin: 0;
     font-weight: bold;
@@ -38,9 +39,21 @@ mat-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1rem;
-  background-color: var.$primary-color;
+  padding: 4rem 1rem;
+  background-image: linear-gradient(to bottom, rgb(184, 182, 182), rgb(105, 105, 105));
   color: white;
+  font-family: var.$font-family;
+  font-size: 2.5rem;
+
+  & .button-gradient {
+    font-size: 1.25rem;
+    padding: 0.5rem 1rem;
+  }
+
+  & a:-webkit-any-link {
+    text-decoration: none;
+    color: white;
+  }
 }
 
 .dashboard-section {
@@ -48,20 +61,37 @@ mat-toolbar {
   align-items: center;
   justify-content: center;
   height: calc(100vh - 130px);
+
+  &.background-gradient {
+    background-image: linear-gradient(to top, rgb(255, 255, 255), rgb(184, 184, 184));
+  }
+
+  @include mixins.Brackpoints('small') {
+    height: calc(100vh - 130px);
+  }
 }
 
 .dashboard-buttons {
   display: flex;
   gap: 1rem;
+
+  & .button-gradient {
+    padding: 4rem 3rem;
+    text-decoration: unset;
+    font-size: 1.25rem;
+    color: var.$color-text;
+  }
+
   @include mixins.Brackpoints('small') {
     flex-direction: column;
     align-items: stretch;
-  }
-  .dashboard-button {
-    flex: 1;
-    min-width: 200px;
-    max-width: 290px;
-    min-height: 100px;
+
+    & .button-gradient {
+      padding: 3.5rem 3rem;
+      text-decoration: unset;
+      font-size: 1rem;
+      color: var.$color-text;
+    }
   }
 }
 
@@ -72,4 +102,3 @@ mat-footer {
   padding: 0.5rem 0;
   background-color: var.$primary-color;
 }
-

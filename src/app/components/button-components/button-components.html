@@ -1,6 +1,6 @@
 @if (routerLink(); as route) {
   <a class="button" [class.button--primary]="variant() === 'primary'"
-    [class.button--danger]="variant() === 'danger'" [class.button--month]="variant() === 'monthButton'" [routerLink]="route">
+    [class.button--danger]="variant() === 'danger'" [class.button--month]="variant() === 'monthButton'" [class.button--button-gradient]="variant() === 'button-gradient'" [routerLink]="route">
     @if (iconName()) {
       <mat-icon aria-hidden="true">{{ iconName() }}</mat-icon>
     }
@@ -8,7 +8,7 @@
   </a>
 } @else {
   <button class="button" [class.button--primary]="variant() === 'primary'"
-    [class.button--danger]="variant() === 'danger'" [class.button--month]="variant() === 'monthButton'" [type]="buttonType()"
+    [class.button--danger]="variant() === 'danger'" [class.button--month]="variant() === 'monthButton'" [class.button--button-gradient]="variant() === 'button-gradient'" [type]="buttonType()"
     [attr.aria-label]="ariaLabel()"
     (click)="buttonClick.emit()">
     @if (iconName()) {

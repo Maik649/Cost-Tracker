@@ -1,7 +1,10 @@
 <section class="page">
   <div class="sub-header-container">
+    <div class="sub-header-content-wrapper">
     <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="arrow_back"></app-sub-header>
+    </div>
   </div>
+  <div class="content-wrapper">
 
   <h1>Einstellungen</h1>
 
@@ -9,12 +12,13 @@
     <h2 id="backup-heading">Datensicherung</h2>
     <p>Exportiere alle Einträge als JSON-Datei oder stelle sie aus einer Sicherung wieder her. Beim Import werden die aktuellen Einträge ersetzt.</p>
     <div class="settings-actions">
-      <app-button-components label="Backup exportieren" iconName="download" (buttonClick)="exportBackup()" />
-      <app-button-components label="Backup importieren" iconName="upload" (buttonClick)="importInput.click()" />
+      <app-button-components variant="button-gradient" label="Backup exportieren" iconName="download" (buttonClick)="exportBackup()" />
+      <app-button-components variant="button-gradient" label="Backup importieren" iconName="upload" (buttonClick)="importInput.click()" />
       <input #importInput type="file" accept="application/json,.json" hidden (change)="importBackup($event)">
     </div>
     @if (backupMessage()) {
     <p [class.backup-error]="backupIsError()" [attr.role]="backupIsError() ? 'alert' : 'status'">{{ backupMessage() }}</p>
     }
   </section>
+  </div>
 </section>

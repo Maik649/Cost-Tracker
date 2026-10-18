@@ -1,9 +1,11 @@
 <section class="page">
   <div class="sub-header-container">
+    <div class="sub-header-content-wrapper">
     <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-kosten" iconName="arrow_back"></app-sub-header>
     <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+    </div>
   </div>
-
+  <div class="content-wrapper">
   @if (loadingEntries()) {
     <p role="status">Gespeicherte Einträge werden geladen …</p>
   }
@@ -28,7 +30,7 @@
       @for (month of yearMonths(); track month.key) {
       <app-button-components [label]="month.name"
         [ariaLabel]="'Details für ' + month.name + ' ' + selectedYear() + ' anzeigen'" iconName="calendar_month"
-        [variant]="month.key === selectedMonth() ? 'monthButton' : 'secondary'" (buttonClick)="showMonth(month.key)" />
+        [variant]="month.key === selectedMonth() ? 'button-gradient' : 'secondary'" (buttonClick)="showMonth(month.key)" />
       }
     </div>
   </div>
@@ -98,8 +100,8 @@
       <p class="error-message" role="alert">{{ editError() }}</p>
       }
       <div class="edit-form-actions">
-        <app-button-components label="Änderungen speichern" iconName="save" buttonType="submit" variant="primary" />
-        <app-button-components label="Abbrechen" iconName="close" (buttonClick)="cancelEditing()" />
+        <app-button-components label="Änderungen speichern" iconName="save" buttonType="submit" variant="button-gradient" />
+        <app-button-components label="Abbrechen"  iconName="close" (buttonClick)="cancelEditing()" variant="button-gradient" />
       </div>
     </form>
   </section>
@@ -159,15 +161,15 @@
           <div class="entry-actions">
             <app-button-components label=""
               [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' bearbeiten'"
-              iconName="edit" (buttonClick)="startEditing(entry)" />
+              iconName="edit" (buttonClick)="startEditing(entry)" variant="button-gradient" />
             @if (entry.isRecurring && entry.isActive) {
             <app-button-components label=""
               [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' pausieren'"
-              iconName="pause_circle" (buttonClick)="deactivateRecurring(entry.id)" />
+              iconName="pause_circle" (buttonClick)="deactivateRecurring(entry.id)" variant="button-gradient" />
             }
             <app-button-components label=""
               [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' löschen'"
-              iconName="delete" variant="danger" (buttonClick)="deleteEntry(entry.id)" />
+              iconName="delete" variant="button-gradient" (buttonClick)="deleteEntry(entry.id)" />
           </div>
         </div>
       </li>
@@ -220,4 +222,5 @@
     </ul>
   </section>
   }
-</section>
+  </div>
+  </section>

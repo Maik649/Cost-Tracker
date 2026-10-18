@@ -2,10 +2,10 @@ import { Component, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'monthButton';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'monthButton' | 'button-gradient';
 export type ButtonType = 'button' | 'submit';
 
-@Component({
+@Component({  
   imports: [MatIconModule, RouterLink],
   selector: 'app-button-components',
   styleUrls: ['./button-components.scss'],
@@ -16,6 +16,7 @@ export class ButtonComponents {
   routerLink = input<string | null>(null);
   buttonType = input<ButtonType>('button');
   variant = input<ButtonVariant>('secondary');
+  buttonGradient = input<ButtonVariant>('button-gradient');
   monthButton = input<ButtonVariant>('monthButton');
   iconName = input<string | null>(null);
   ariaLabel = input<string | null>(null);
