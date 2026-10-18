@@ -1,18 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AddCost } from './add-cost';
-import { loadCostEntries } from '../../models/cost-entry';
+import { CostEntry, parseStoredCostEntries } from '../../models/cost-entry';
+import { CostEntryStore } from '../../services/cost-entry-store.service';
 import { vi } from 'vitest';
 
 describe('AddCost', () => {
   let component: AddCost;
   let fixture: ComponentFixture<AddCost>;
+  const costEntryStore = {
+    loadCostEntries: vi.fn(async () => [] as CostEntry[]),
+    saveCostEntries: vi.fn(async (_entries: CostEntry[]) => undefined),
+  };
 
   beforeEach(async () => {
-    localStorage.removeItem('lastCost');
+    costEntryStore.loadCostEntries.mockReset().mockResolvedValue([]);
+    costEntryStore.saveCostEntries.mockReset().mockResolvedValue(undefined);
     await TestBed.configureTestingModule({
       imports: [AddCost],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: CostEntryStore, useValue: costEntryStore },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddCost);
@@ -24,7 +33,7 @@ describe('AddCost', () => {
     expect(component).toBeTruthy();
   });
 
-  it('saves a typed entry for the selected month', () => {
+  it('saves a typed entry for the selected month', async () => {
     component.costType.set('income');
     component.amount.set(2800);
     component.description.set('Gehalt');
@@ -32,9 +41,9 @@ describe('AddCost', () => {
     component.month.set('2026-10');
     component.isRecurring.set(true);
 
-    component.addCost();
+    await component.addCost();
 
-    const savedEntries = JSON.parse(localStorage.getItem('lastCost') ?? '[]');
+    const savedEntries = costEntryStore.saveCostEntries.mock.calls[0][0];
     expect(savedEntries).toHaveLength(1);
     expect(savedEntries[0]).toMatchObject({
       type: 'income',
@@ -52,19 +61,16 @@ describe('AddCost', () => {
       .toContain('Eintrag wurde erfolgreich gespeichert.');
   });
 
-  it('does not show success when the entry cannot be saved', () => {
+  it('does not show success when the entry cannot be saved', async () => {
     component.amount.set(25);
-    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
-      throw new Error('Storage is full');
-    });
+    costEntryStore.saveCostEntries.mockRejectedValue(new Error('Storage is full'));
 
-    component.addCost();
+    await component.addCost();
 
     expect(component.successMessage()).toBe('');
     expect(component.errorMessage()).toContain('Der Eintrag konnte nicht gespeichert werden');
-    expect(component.lastCost()).toHaveLength(0);
+    expect(component.costEntries()).toHaveLength(0);
 
-    setItem.mockRestore();
   });
 
   it('does not show success for an invalid amount', () => {
@@ -77,7 +83,7 @@ describe('AddCost', () => {
   });
 
   it('migrates saved entries from the previous format', () => {
-    localStorage.setItem('lastCost', JSON.stringify([{
+    const migrated = parseStoredCostEntries(JSON.stringify([{
       income: 2800,
       expense: 0,
       description: 'Gehalt',
@@ -85,8 +91,6 @@ describe('AddCost', () => {
       isIncome: true,
       isExpense: false,
     }]));
-
-    const migrated = loadCostEntries();
 
     expect(migrated).toHaveLength(1);
     expect(migrated[0]).toMatchObject({

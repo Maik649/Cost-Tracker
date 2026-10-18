@@ -1,6 +1,6 @@
 # Cost Tracker
 
-Kleine Angular-Web-App zum Erfassen und Auswerten von monatlichen Einnahmen und Ausgaben. Alle Daten bleiben lokal im Browser (`localStorage`), es gibt kein Backend.
+Kleine Angular-Web-App zum Erfassen und Auswerten von monatlichen Einnahmen und Ausgaben. Alle Daten bleiben lokal im Browser (IndexedDB), es gibt kein Backend.
 
 ## Funktionen
 
@@ -25,8 +25,8 @@ Kleine Angular-Web-App zum Erfassen und Auswerten von monatlichen Einnahmen und 
 ## Technik
 
 - Angular 22 (Standalone Components, Signals) und Angular Material
-- Speicherung im `localStorage` unter dem Schlüssel `lastCost`
-- Datenmodell und Backup-Logik in `src/app/models/cost-entry.ts`
+- Speicherung der Einträge in IndexedDB; vorhandene Daten aus `localStorage` werden beim ersten Laden migriert
+- Datenmodell und Backup-Logik in `src/app/models/cost-entry.ts`, IndexedDB-Zugriff in `src/app/services/cost-entry-store.service.ts`
 
 ## Erste Schritte
 

@@ -5,6 +5,9 @@
   </div>
 
   <h1>Eintrag hinzufügen</h1>
+  @if (loadingEntries()) {
+    <p role="status">Gespeicherte Einträge werden geladen …</p>
+  }
   <form class="entry-form" (ngSubmit)="addCost()">
     <label for="costType">Art des Eintrags</label>
     <select
@@ -78,7 +81,7 @@
     }
 
     <div class="button-section">
-      <app-button-components [buttonType]="'submit'" label="Speichern" iconName="save"></app-button-components>
+      <app-button-components [buttonType]="'submit'" [label]="saving() ? 'Speichert …' : 'Speichern'" iconName="save"></app-button-components>
     </div>
   </form>
 </section>

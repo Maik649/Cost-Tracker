@@ -1,18 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { DocView } from './doc-view';
-import { currentMonthKey } from '../../models/cost-entry';
+import { CostEntry, currentMonthKey } from '../../models/cost-entry';
+import { CostEntryStore } from '../../services/cost-entry-store.service';
 import { vi } from 'vitest';
 
 describe('DocView', () => {
   let component: DocView;
   let fixture: ComponentFixture<DocView>;
+  const costEntryStore = {
+    loadCostEntries: vi.fn(async () => [] as CostEntry[]),
+    saveCostEntries: vi.fn(async (_entries: CostEntry[]) => undefined),
+  };
 
   beforeEach(async () => {
-    localStorage.removeItem('lastCost');
+    costEntryStore.loadCostEntries.mockReset().mockResolvedValue([]);
+    costEntryStore.saveCostEntries.mockReset().mockResolvedValue(undefined);
     await TestBed.configureTestingModule({
       imports: [DocView],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: CostEntryStore, useValue: costEntryStore },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DocView);
@@ -156,7 +165,7 @@ describe('DocView', () => {
     expect(component.monthlyEntries().map(entry => entry.id)).toEqual(['salary', 'future']);
   });
 
-  it('keeps a paused recurring entry in the current month and removes it from following months', () => {
+  it('keeps a paused recurring entry in the current month and removes it from following months', async () => {
     const currentMonth = currentMonthKey();
     const [year, monthNumber] = currentMonth.split('-').map(Number);
     const followingMonth = monthNumber === 12
@@ -175,7 +184,7 @@ describe('DocView', () => {
       endedAtMonth: null,
     }]);
 
-    component.deactivateRecurring('internet');
+    await component.deactivateRecurring('internet');
     expect(component.monthlyEntries()).toHaveLength(1);
     expect(component.inactiveRecurringEntries()).toHaveLength(1);
 
@@ -186,7 +195,7 @@ describe('DocView', () => {
     expect(component.monthlyEntries()).toHaveLength(1);
   });
 
-  it('reactivates a recurring entry from this month while preserving its previous active period', () => {
+  it('reactivates a recurring entry from this month while preserving its previous active period', async () => {
     const currentMonth = currentMonthKey();
     const previousYear = Number(currentMonth.slice(0, 4)) - 1;
     component.selectedMonth.set(currentMonth);
@@ -206,7 +215,7 @@ describe('DocView', () => {
       }],
     }]);
 
-    component.reactivateRecurring('gym');
+    await component.reactivateRecurring('gym');
 
     expect(component.monthlyEntries()).toHaveLength(1);
     expect(component.inactiveRecurringEntries()).toHaveLength(0);
@@ -214,7 +223,7 @@ describe('DocView', () => {
       { startMonth: `${previousYear}-01`, endMonth: `${previousYear}-04` },
       { startMonth: currentMonth, endMonth: null },
     ]);
-    expect(JSON.parse(localStorage.getItem('lastCost') ?? '[]')[0].isActive).toBe(true);
+    expect(costEntryStore.saveCostEntries.mock.calls.at(-1)?.[0][0].isActive).toBe(true);
 
     component.selectedMonth.set(`${previousYear}-03`);
     expect(component.monthlyEntries()).toHaveLength(1);
@@ -222,7 +231,7 @@ describe('DocView', () => {
     expect(component.monthlyEntries()).toHaveLength(0);
   });
 
-  it('edits entry details without changing the recurrence schedule', () => {
+  it('edits entry details without changing the recurrence schedule', async () => {
     const entry = {
       id: 'rent',
       type: 'expense' as const,
@@ -243,7 +252,7 @@ describe('DocView', () => {
     component.editAmount.set(1000);
     component.editDescription.set('Wohnungsmiete');
 
-    component.saveEditedEntry();
+    await component.saveEditedEntry();
 
     expect(component.kostenList()[0]).toMatchObject({
       amount: 1000,
@@ -253,7 +262,7 @@ describe('DocView', () => {
     });
   });
 
-  it('changes a recurring amount from the selected month without changing previous months', () => {
+  it('changes a recurring amount from the selected month without changing previous months', async () => {
     const entry = {
       id: 'electricity',
       type: 'expense' as const,
@@ -271,7 +280,7 @@ describe('DocView', () => {
     component.editAmount.set(125);
 
     expect(component.editEffectiveMonth()).toBe('2026-03');
-    component.saveEditedEntry();
+    await component.saveEditedEntry();
 
     expect(component.kostenList()[0].amountPeriods).toEqual([
       { startMonth: '2026-01', amount: 100 },
@@ -291,7 +300,7 @@ describe('DocView', () => {
     expect(component.yearlyExpense()).toBe(1450);
   });
 
-  it('deletes an entry only after confirmation', () => {
+  it('deletes an entry only after confirmation', async () => {
     component.kostenList.set([{
       id: 'coffee',
       type: 'expense',
@@ -305,13 +314,13 @@ describe('DocView', () => {
     }]);
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-    component.deleteEntry('coffee');
+    await component.deleteEntry('coffee');
     expect(component.kostenList()).toHaveLength(1);
 
     confirmSpy.mockReturnValue(true);
-    component.deleteEntry('coffee');
+    await component.deleteEntry('coffee');
     expect(component.kostenList()).toHaveLength(0);
-    expect(JSON.parse(localStorage.getItem('lastCost') ?? '[]')).toHaveLength(0);
+    expect(costEntryStore.saveCostEntries.mock.calls.at(-1)?.[0]).toHaveLength(0);
 
     confirmSpy.mockRestore();
   });

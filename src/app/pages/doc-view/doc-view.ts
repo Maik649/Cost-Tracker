@@ -1,6 +1,6 @@
 import { CurrencyPipe, registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponents } from '../../components/button-components/button-components';
 
@@ -11,10 +11,9 @@ import {
   CostEntry,
   currentMonthKey,
   getRecurrencePeriods,
-  loadCostEntries,
-  saveCostEntries,
   setAmountFromMonth,
 } from '../../models/cost-entry';
+import { CostEntryStore } from '../../services/cost-entry-store.service';
 
 registerLocaleData(localeDe);
 
@@ -45,10 +44,13 @@ function entryLabel(entry: CostEntry): string {
   styleUrls: ['./doc-view.scss'],
   imports: [ButtonComponents, CurrencyPipe, FormsModule, SubHeader],
 })
-export class DocView {
+export class DocView implements OnInit {
+  private readonly costEntryStore = inject(CostEntryStore);
   selectedMonth = signal(currentMonthKey());
   selectedYear = signal(Number(currentMonthKey().slice(0, 4)));
-  kostenList = signal<CostEntry[]>(loadCostEntries());
+  kostenList = signal<CostEntry[]>([]);
+  loadingEntries = signal(true);
+  storageError = signal('');
   editingEntryId = signal<string | null>(null);
   editType = signal<CostType>('expense');
   editAmount = signal<number | null>(null);
@@ -60,6 +62,32 @@ export class DocView {
 
   sortMode = signal<SortMode>('description');
   searchTerm = signal('');
+
+  ngOnInit(): void {
+    void this.loadEntries();
+  }
+
+  private async loadEntries(): Promise<void> {
+    try {
+      this.kostenList.set(await this.costEntryStore.loadCostEntries());
+    } catch (error) {
+      this.storageError.set(`Gespeicherte Einträge konnten nicht aus IndexedDB geladen werden: ${errorMessage(error)}`);
+    } finally {
+      this.loadingEntries.set(false);
+    }
+  }
+
+  private async persistEntries(entries: CostEntry[]): Promise<boolean> {
+    try {
+      await this.costEntryStore.saveCostEntries(entries);
+      this.kostenList.set(entries);
+      this.storageError.set('');
+      return true;
+    } catch (error) {
+      this.storageError.set(`Änderungen konnten nicht in IndexedDB gespeichert werden: ${errorMessage(error)}`);
+      return false;
+    }
+  }
 
   monthlyEntries = computed(() => {
     const month = this.selectedMonth();
@@ -160,7 +188,7 @@ export class DocView {
     this.editError.set('');
   }
 
-  saveEditedEntry(): void {
+  async saveEditedEntry(): Promise<void> {
     const entryId = this.editingEntryId();
     const amount = this.editAmount();
     if (entryId === null) {
@@ -202,12 +230,12 @@ export class DocView {
     const updatedEntries = this.kostenList().map(entry =>
       entry.id === entryId ? updatedEntry : entry,
     );
-    saveCostEntries(updatedEntries);
-    this.kostenList.set(updatedEntries);
-    this.cancelEditing();
+    if (await this.persistEntries(updatedEntries)) {
+      this.cancelEditing();
+    }
   }
 
-  deleteEntry(entryId: string): void {
+  async deleteEntry(entryId: string): Promise<void> {
     const entry = this.kostenList().find(candidate => candidate.id === entryId);
     if (!entry) {
       return;
@@ -219,14 +247,15 @@ export class DocView {
     }
 
     const updatedEntries = this.kostenList().filter(candidate => candidate.id !== entryId);
-    saveCostEntries(updatedEntries);
-    this.kostenList.set(updatedEntries);
+    if (!await this.persistEntries(updatedEntries)) {
+      return;
+    }
     if (this.editingEntryId() === entryId) {
       this.cancelEditing();
     }
   }
 
-  deactivateRecurring(entryId: string): void {
+  async deactivateRecurring(entryId: string): Promise<void> {
     const endedAtMonth = followingMonthKey(currentMonthKey());
     const updatedEntries = this.kostenList().map(entry =>
       entry.id === entryId && entry.isRecurring && entry.isActive
@@ -242,11 +271,10 @@ export class DocView {
         }
         : entry,
     );
-    saveCostEntries(updatedEntries);
-    this.kostenList.set(updatedEntries);
+    await this.persistEntries(updatedEntries);
   }
 
-  reactivateRecurring(entryId: string): void {
+  async reactivateRecurring(entryId: string): Promise<void> {
     const startMonth = currentMonthKey();
     const updatedEntries = this.kostenList().map(entry =>
       entry.id === entryId && entry.isRecurring && !entry.isActive
@@ -261,8 +289,7 @@ export class DocView {
         }
         : entry,
     );
-    saveCostEntries(updatedEntries);
-    this.kostenList.set(updatedEntries);
+    await this.persistEntries(updatedEntries);
   }
 }
 
@@ -279,4 +306,8 @@ function followingMonthKey(month: string): string {
   return monthNumber === 12
     ? `${year + 1}-01`
     : `${year}-${String(monthNumber + 1).padStart(2, '0')}`;
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : 'Unbekannter Speicherfehler.';
 }

@@ -4,6 +4,13 @@
     <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
   </div>
 
+  @if (loadingEntries()) {
+    <p role="status">Gespeicherte Einträge werden geladen …</p>
+  }
+  @if (storageError()) {
+    <p class="error-message" role="alert">{{ storageError() }}</p>
+  }
+
   <div class="overview-heading">
     <div>
       <h1>Monatsauswahl</h1>

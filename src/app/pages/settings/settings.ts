@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ButtonComponents } from '../../components/button-components/button-components';
 import { SubHeader } from '../../components/sub-header/sub-header';
-import { createBackupJson, loadCostEntries, parseBackupJson, saveCostEntries } from '../../models/cost-entry';
+import { createBackupJson, parseBackupJson } from '../../models/cost-entry';
+import { CostEntryStore } from '../../services/cost-entry-store.service';
 
 @Component({
   selector: 'app-settings',
@@ -11,19 +12,24 @@ import { createBackupJson, loadCostEntries, parseBackupJson, saveCostEntries } f
 })
 
 export class Settings {
+  private readonly costEntryStore = inject(CostEntryStore);
   backupMessage = signal('');
   backupIsError = signal(false);
 
-  exportBackup(): void {
-    const entries = loadCostEntries();
-    const blob = new Blob([createBackupJson(entries)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `cost-tracker-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-    this.showMessage(`${entries.length} Einträge exportiert.`, false);
+  async exportBackup(): Promise<void> {
+    try {
+      const entries = await this.costEntryStore.loadCostEntries();
+      const blob = new Blob([createBackupJson(entries)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `cost-tracker-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      this.showMessage(`${entries.length} Einträge exportiert.`, false);
+    } catch (error) {
+      this.showMessage(`Backup konnte nicht aus IndexedDB geladen werden: ${errorMessage(error)}`, true);
+    }
   }
 
   async importBackup(event: Event): Promise<void> {
@@ -39,10 +45,10 @@ export class Settings {
       if (!window.confirm(`${entries.length} Einträge importieren? Alle aktuellen Einträge werden ersetzt.`)) {
         return;
       }
-      saveCostEntries(entries);
+      await this.costEntryStore.saveCostEntries(entries);
       this.showMessage(`${entries.length} Einträge importiert.`, false);
     } catch (error) {
-      this.showMessage(error instanceof Error ? error.message : 'Import fehlgeschlagen.', true);
+      this.showMessage(errorMessage(error), true);
     }
   }
 
@@ -50,4 +56,8 @@ export class Settings {
     this.backupMessage.set(message);
     this.backupIsError.set(isError);
   }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : 'Unbekannter Fehler.';
 }

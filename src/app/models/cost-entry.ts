@@ -24,15 +24,12 @@ export interface AmountPeriod {
   amount: number;
 }
 
-const storageKey = 'lastCost';
-
 export function currentMonthKey(): string {
   const now = new Date();
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
-export function loadCostEntries(): CostEntry[] {
-  const savedEntries = localStorage.getItem(storageKey);
+export function parseStoredCostEntries(savedEntries: string | null): CostEntry[] {
   if (savedEntries === null) {
     return [];
   }
@@ -42,8 +39,7 @@ export function loadCostEntries(): CostEntry[] {
     throw new Error('Gespeicherte Einträge müssen eine Liste sein.');
   }
 
-  let migrated = false;
-  const entries = parsedEntries.flatMap((entry: unknown, index: number) => {
+  return parsedEntries.flatMap((entry: unknown, index: number) => {
     if (isCostEntry(entry)) {
       return [{
         ...entry,
@@ -54,22 +50,11 @@ export function loadCostEntries(): CostEntry[] {
     }
 
     if (isLegacyCostEntry(entry)) {
-      migrated = true;
       return migrateLegacyEntry(entry, index);
     }
 
     throw new Error(`Gespeicherter Eintrag an Position ${index + 1} ist ungültig.`);
   });
-
-  if (migrated) {
-    saveCostEntries(entries);
-  }
-
-  return entries;
-}
-
-export function saveCostEntries(entries: CostEntry[]): void {
-  localStorage.setItem(storageKey, JSON.stringify(entries));
 }
 
 export function createBackupJson(entries: CostEntry[]): string {
