@@ -7,7 +7,7 @@
   </div>
   <div class="content-wrapper">
   @if (loadingEntries()) {
-    <p role="status">Gespeicherte Einträge werden geladen …</p>
+    <app-loading-spinner ></app-loading-spinner>
   }
   @if (storageError()) {
     <p class="error-message" role="alert">{{ storageError() }}</p>
@@ -119,20 +119,6 @@
       (ngModelChange)="searchTerm.set($event)"
     >
   </div>
-
-  <!-- <div class="month-picker sort-picker">
-    <label for="sortMode">Sortieren nach</label>
-    <select
-      id="sortMode"
-      name="sortMode"
-      [ngModel]="sortMode()"
-      (ngModelChange)="sortMode.set($event)"
-    >
-      <option value="description">Beschreibung (A–Z)</option>
-      <option value="amount">Betrag (höchster zuerst)</option>
-      <option value="none">Reihenfolge der Eingabe</option>
-    </select>
-  </div> -->
 
   <section class="entries-section" aria-labelledby="entries-heading">
     <h2 id="entries-heading" class="entries-heading">Einträge für {{ selectedMonth() }}</h2>

@@ -3,7 +3,7 @@ import localeDe from '@angular/common/locales/de';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponents } from '../../components/button-components/button-components';
-
+import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostType } from '../../models/cost-entry';
 import {
@@ -42,13 +42,13 @@ function entryLabel(entry: CostEntry): string {
   selector: 'app-doc-view',
   templateUrl: './doc-view.html',
   styleUrls: ['./doc-view.scss'],
-  imports: [ButtonComponents, CurrencyPipe, FormsModule, SubHeader],
+  imports: [ButtonComponents, CurrencyPipe, FormsModule, SubHeader, LoadingSpinner],
 })
 export class DocView implements OnInit {
   private readonly costEntryStore = inject(CostEntryStore);
   selectedMonth = signal(currentMonthKey());
   selectedYear = signal(Number(currentMonthKey().slice(0, 4)));
-  kostenList = signal<CostEntry[]>([]);
+  CostList = signal<CostEntry[]>([]);
   loadingEntries = signal(true);
   storageError = signal('');
   editingEntryId = signal<string | null>(null);
@@ -64,12 +64,15 @@ export class DocView implements OnInit {
   searchTerm = signal('');
 
   ngOnInit(): void {
-    void this.loadEntries();
+    setTimeout(() => {
+      this.loadingEntries.set(true);
+      void this.loadEntries();
+    }, 600);
   }
 
   private async loadEntries(): Promise<void> {
     try {
-      this.kostenList.set(await this.costEntryStore.loadCostEntries());
+      this.CostList.set(await this.costEntryStore.loadCostEntries());
     } catch (error) {
       this.storageError.set(`Gespeicherte Einträge konnten nicht aus IndexedDB geladen werden: ${errorMessage(error)}`);
     } finally {
@@ -80,7 +83,7 @@ export class DocView implements OnInit {
   private async persistEntries(entries: CostEntry[]): Promise<boolean> {
     try {
       await this.costEntryStore.saveCostEntries(entries);
-      this.kostenList.set(entries);
+      this.CostList.set(entries);
       this.storageError.set('');
       return true;
     } catch (error) {
@@ -126,11 +129,11 @@ export class DocView implements OnInit {
   );
 
   inactiveRecurringEntries = computed(() =>
-    this.kostenList().filter(entry => entry.isRecurring && !entry.isActive),
+    this.CostList().filter(entry => entry.isRecurring && !entry.isActive),
   );
 
   allMonthEntries = computed(() =>
-    this.kostenList().filter(entry => isEntryInMonth(entry, this.selectedMonth())),
+    this.CostList().filter(entry => isEntryInMonth(entry, this.selectedMonth())),
   );
 
   totalIncome = computed(() =>
@@ -206,7 +209,7 @@ export class DocView implements OnInit {
       return;
     }
 
-    const existingEntry = this.kostenList().find(entry => entry.id === entryId);
+    const existingEntry = this.CostList().find(entry => entry.id === entryId);
     if (!existingEntry) {
       this.editError.set('Der Eintrag konnte nicht gefunden werden.');
       return;
@@ -227,7 +230,7 @@ export class DocView implements OnInit {
         ? { amountPeriods: setAmountFromMonth(existingEntry, effectiveMonth, amount) }
         : {}),
     };
-    const updatedEntries = this.kostenList().map(entry =>
+    const updatedEntries = this.CostList().map(entry =>
       entry.id === entryId ? updatedEntry : entry,
     );
     if (await this.persistEntries(updatedEntries)) {
@@ -236,7 +239,7 @@ export class DocView implements OnInit {
   }
 
   async deleteEntry(entryId: string): Promise<void> {
-    const entry = this.kostenList().find(candidate => candidate.id === entryId);
+    const entry = this.CostList().find(candidate => candidate.id === entryId);
     if (!entry) {
       return;
     }
@@ -246,7 +249,7 @@ export class DocView implements OnInit {
       return;
     }
 
-    const updatedEntries = this.kostenList().filter(candidate => candidate.id !== entryId);
+    const updatedEntries = this.CostList().filter(candidate => candidate.id !== entryId);
     if (!await this.persistEntries(updatedEntries)) {
       return;
     }
@@ -257,7 +260,7 @@ export class DocView implements OnInit {
 
   async deactivateRecurring(entryId: string): Promise<void> {
     const endedAtMonth = followingMonthKey(currentMonthKey());
-    const updatedEntries = this.kostenList().map(entry =>
+    const updatedEntries = this.CostList().map(entry =>
       entry.id === entryId && entry.isRecurring && entry.isActive
         ? {
           ...entry,
@@ -276,7 +279,7 @@ export class DocView implements OnInit {
 
   async reactivateRecurring(entryId: string): Promise<void> {
     const startMonth = currentMonthKey();
-    const updatedEntries = this.kostenList().map(entry =>
+    const updatedEntries = this.CostList().map(entry =>
       entry.id === entryId && entry.isRecurring && !entry.isActive
         ? {
           ...entry,

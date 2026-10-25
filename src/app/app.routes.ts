@@ -6,6 +6,7 @@ import { DocView } from './pages/doc-view/doc-view';
 import { AddCost } from './pages/add-cost/add-cost';
 import { Settings } from './pages/settings/settings';
 import { authGuard } from './guards/auth.guard';
+import { Diagram } from './pages/diagram/diagram';
 
 export const routes: Routes = [
   {
@@ -28,13 +29,18 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'add-kosten',
+    path: 'add-cost',
     component: AddCost,
     canActivate: [authGuard],
   },
   {
     path: 'settings',
     component: Settings,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'diagram',
+    component: Diagram,
     canActivate: [authGuard],
   },
   {

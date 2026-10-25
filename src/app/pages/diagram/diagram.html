@@ -1,0 +1,48 @@
+<section class="page">
+  <div class="sub-header-container">
+    <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+  </div>
+
+  <section class="diagram-container">
+
+    <h1>Ausgaben nach Kategorie</h1>
+    @if (loadingEntries()) {
+      <app-loading-spinner role="status">Ausgaben werden geladen …</app-loading-spinner>
+    } @else if (errorMessage()) {
+      <p class="error-message" role="alert">{{ errorMessage() }}</p>
+    } @else {
+      <label class="month-picker">
+        Monat auswählen
+        <input
+          #monthInput
+          type="month"
+          [value]="selectedMonth()"
+          (change)="selectMonth(monthInput.value)"
+        >
+      </label>
+      <p class="description">Ausgaben im {{ monthLabel(selectedMonth()) }}</p>
+
+      @if (categoryTotals().length === 0) {
+        <p>Für diesen Monat sind keine Ausgaben gespeichert.</p>
+      } @else {
+        <div class="category-list" role="list">
+          @for (category of categoryTotals(); track category.category) {
+            <div class="category-row" role="listitem">
+              <div class="category-heading">
+                <span>{{ category.category }}</span>
+                <strong>{{ category.amount | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</strong>
+              </div>
+              <div class="bar-track" aria-hidden="true">
+                <div class="bar-fill" [style.width.%]="category.barWidth"></div>
+              </div>
+            </div>
+          }
+        </div>
+        <p class="total">
+          Gesamtausgaben:
+          <strong>{{ totalExpenses() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</strong>
+        </p>
+      }
+    }
+  </section>
+</section>
