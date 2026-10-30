@@ -6,6 +6,12 @@ import { ButtonComponents } from '../../components/button-components/button-comp
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostType } from '../../models/cost-entry';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  EditEntryDialog,
+  type EditEntryDialogData,
+  type EditEntryResult,
+} from './edit-entry-dialog';
 import {
   amountForMonth,
   CostEntry,
@@ -14,7 +20,6 @@ import {
   setAmountFromMonth,
 } from '../../models/cost-entry';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
-
 registerLocaleData(localeDe);
 
 const monthsOfYear = [
@@ -45,21 +50,13 @@ function entryLabel(entry: CostEntry): string {
   imports: [ButtonComponents, CurrencyPipe, FormsModule, SubHeader, LoadingSpinner],
 })
 export class DocView implements OnInit {
+  private readonly dialog = inject(MatDialog);
   private readonly costEntryStore = inject(CostEntryStore);
   selectedMonth = signal(currentMonthKey());
   selectedYear = signal(Number(currentMonthKey().slice(0, 4)));
   CostList = signal<CostEntry[]>([]);
   loadingEntries = signal(true);
   storageError = signal('');
-  editingEntryId = signal<string | null>(null);
-  editType = signal<CostType>('expense');
-  editAmount = signal<number | null>(null);
-  editDescription = signal('');
-  editCategory = signal('');
-  editEffectiveMonth = signal(currentMonthKey());
-  editIsRecurring = signal(false);
-  editError = signal('');
-
   sortMode = signal<SortMode>('description');
   searchTerm = signal('');
 
@@ -162,80 +159,58 @@ export class DocView implements OnInit {
   }
 
   startEditing(entry: CostEntry): void {
-    this.editingEntryId.set(entry.id);
-    this.editType.set(entry.type);
-    this.editAmount.set(entry.amount);
-    this.editDescription.set(entry.description);
-    this.editCategory.set(entry.category);
-    this.editIsRecurring.set(entry.isRecurring);
-    this.editEffectiveMonth.set(
-      this.selectedMonth() >= entry.month ? this.selectedMonth() : entry.month,
+    const data: EditEntryDialogData = {
+      entry,
+      selectedMonth: this.selectedMonth(),
+    };
+    const dialogRef = this.dialog.open<EditEntryDialog, EditEntryDialogData, EditEntryResult>(
+      EditEntryDialog,
+      {
+        width: '560px',
+        maxWidth: '95vw',
+        data,
+        ariaLabel: `Eintrag ${entry.description || entry.category || 'Ohne Bezeichnung'} bearbeiten`,
+      },
     );
-    this.editError.set('');
-  }
 
-  updateEditAmount(value: number | string | null): void {
-    this.editAmount.set(value === null || value === '' ? null : Number(value));
-  }
-
-  updateEditEffectiveMonth(value: string): void {
-    this.editEffectiveMonth.set(value);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        void this.saveEditedEntry(entry.id, result);
+      }
+    });
   }
 
   amountForSelectedMonth(entry: CostEntry): number {
     return amountForMonth(entry, this.selectedMonth());
   }
 
-  cancelEditing(): void {
-    this.editingEntryId.set(null);
-    this.editError.set('');
-  }
-
-  async saveEditedEntry(): Promise<void> {
-    const entryId = this.editingEntryId();
-    const amount = this.editAmount();
-    if (entryId === null) {
-      return;
-    }
-
-    if (amount === null || !Number.isFinite(amount) || amount <= 0) {
-      this.editError.set('Bitte gib einen Betrag größer als 0 ein.');
-      return;
-    }
-
-    const effectiveMonth = this.editEffectiveMonth();
-    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(effectiveMonth)) {
-      this.editError.set('Bitte wähle einen gültigen Wirksamkeitsmonat aus.');
-      return;
-    }
-
+  async saveEditedEntry(entryId: string, changes: EditEntryResult): Promise<void> {
     const existingEntry = this.CostList().find(entry => entry.id === entryId);
     if (!existingEntry) {
-      this.editError.set('Der Eintrag konnte nicht gefunden werden.');
-      return;
-    }
-
-    if (existingEntry.isRecurring && effectiveMonth < existingEntry.month) {
-      this.editError.set('Der Wirksamkeitsmonat darf nicht vor dem Start der Wiederholung liegen.');
       return;
     }
 
     const updatedEntry: CostEntry = {
       ...existingEntry,
-      type: this.editType(),
-      amount,
-      description: this.editDescription().trim(),
-      category: this.editCategory().trim(),
+      type: changes.type,
+      amount: changes.amount,
+      description: changes.description.trim(),
+      category: changes.category.trim(),
       ...(existingEntry.isRecurring
-        ? { amountPeriods: setAmountFromMonth(existingEntry, effectiveMonth, amount) }
+        ? {
+            amountPeriods: setAmountFromMonth(
+              existingEntry,
+              changes.effectiveMonth,
+              changes.amount,
+            ),
+          }
         : {}),
     };
     const updatedEntries = this.CostList().map(entry =>
       entry.id === entryId ? updatedEntry : entry,
     );
-    if (await this.persistEntries(updatedEntries)) {
-      this.cancelEditing();
-    }
+
+    await this.persistEntries(updatedEntries);
   }
 
   async deleteEntry(entryId: string): Promise<void> {
@@ -252,9 +227,6 @@ export class DocView implements OnInit {
     const updatedEntries = this.CostList().filter(candidate => candidate.id !== entryId);
     if (!await this.persistEntries(updatedEntries)) {
       return;
-    }
-    if (this.editingEntryId() === entryId) {
-      this.cancelEditing();
     }
   }
 

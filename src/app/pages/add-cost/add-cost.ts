@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { SubHeader } from '../../components/sub-header/sub-header';
 import { ButtonComponents } from '../../components/button-components/button-components';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import {
   CostEntry,
   CostType,
@@ -11,7 +12,7 @@ import {
 import { CostEntryStore } from '../../services/cost-entry-store.service';
 
 @Component({
-  imports: [FormsModule, SubHeader, ButtonComponents, CommonModule],
+  imports: [FormsModule, SubHeader, ButtonComponents, CommonModule, MatIconModule],
   selector: 'app-add-cost',
   styleUrls: ['./add-cost.scss'],
   templateUrl: './add-cost.html',
@@ -56,18 +57,24 @@ export class AddCost implements OnInit {
     if (this.loadingEntries() || this.errorMessage()) {
       return;
     }
+
     if (this.saving()) {
       return;
     }
 
     const amount = this.amount();
     if (amount === null || !Number.isFinite(amount) || amount <= 0) {
-      this.errorMessage.set('Bitte gib einen Betrag größer als 0 ein.');
+      this.errorMessage.set('Bitte gib einen Betrag!.');
       return;
     }
 
     if (!this.month()) {
       this.errorMessage.set('Bitte wähle einen Monat aus.');
+      return;
+    }
+
+    if (!this.category()) {
+      this.errorMessage.set('Bitte wähle eine Kategorie aus.');
       return;
     }
 
@@ -83,6 +90,7 @@ export class AddCost implements OnInit {
       isActive: true,
       endedAtMonth: null,
     };
+
     const updatedEntries = [...this.costEntries(), entry];
     this.saving.set(true);
     try {

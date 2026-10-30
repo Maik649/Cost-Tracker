@@ -1,90 +1,77 @@
 <section class="page">
   <div class="sub-header-container">
     <div class="sub-header-content-wrapper">
-    <app-sub-header title="Zur Monatsübersicht" subHeaderPath="/doc-view" iconName="arrow_back"></app-sub-header>
-    <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+      <app-sub-header title="Zur Monatsübersicht" subHeaderPath="/doc-view" iconName="arrow_back"></app-sub-header>
+      <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
     </div>
   </div>
   <div class="content-wrapper">
-  <h1>Eintrag hinzufügen</h1>
-  @if (loadingEntries()) {
+    <h1>Eintrag hinzufügen</h1>
+    @if (loadingEntries()) {
     <p role="status">Gespeicherte Einträge werden geladen …</p>
-  }
-  <form class="entry-form" (ngSubmit)="addCost()">
-    <label for="costType">Art des Eintrags</label>
-    <select
-      id="costType"
-      name="costType"
-      [ngModel]="costType()"
-      (ngModelChange)="costType.set($event)"
-    >
-      <option value="income">Einnahme</option>
-      <option value="expense">Ausgabe</option>
-    </select>
-
-    <label for="amount">Betrag (€)</label>
-    <input
-      id="amount"
-      name="amount"
-      type="number"
-      min="0.01"
-      step="0.01"
-      required
-      [ngModel]="amount()"
-      (ngModelChange)="updateAmount($event)"
-    >
-
-    <label for="description">Beschreibung</label>
-    <input
-      id="description"
-      name="description"
-      type="text"
-      required
-      [ngModel]="description()"
-      (ngModelChange)="description.set($event)"
-    >
-
-    <label for="category">Kategorie</label>
-    <input
-      id="category"
-      name="category"
-      type="text"
-      placeholder="z. B. Miete, Gehalt, Einkauf"
-      [ngModel]="category()"
-      (ngModelChange)="category.set($event)"
-    >
-
-    <label for="month">Monat</label>
-    <input
-      id="month"
-      name="month"
-      type="month"
-      required
-      [ngModel]="month()"
-      (ngModelChange)="month.set($event)"
-    >
-
-    <label class="recurring-option" for="isRecurring">
-      <input
-        id="isRecurring"
-        name="isRecurring"
-        type="checkbox"
-        [ngModel]="isRecurring()"
-        (ngModelChange)="isRecurring.set($event)"
-      >
-      Monat wiederholen
-    </label>
-    @if (errorMessage()) {
-      <p class="error-message" role="alert">{{ errorMessage() }}</p>
     }
+    <form class="entry-form" (ngSubmit)="addCost()">
+      <label for="costType">Art des Eintrags</label>
+      <div class="select-icon">
+        <select id="costType" name="costType" [ngModel]="costType()" (ngModelChange)="costType.set($event)">
+          <option value="income">Einnahme</option>
+          <option value="expense">Ausgabe</option>
+        </select>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </div>
 
-    @if (successMessage()) {
-      <p class="success-message" role="status">{{ successMessage() }}</p>
-    }
+      <label for="amount">Betrag (€)</label>
+      <input id="amount" name="amount" type="number" min="0.01" step="0.01" required [ngModel]="amount()"
+        (ngModelChange)="updateAmount($event)">
 
-    <div class="button-section">
-      <app-button-components [variant]="'button-gradient'" [buttonType]="'submit'" [label]="saving() ? 'Speichert …' : 'Speichern'" iconName="save"></app-button-components>
-    </div>
-  </form>
+      <label for="description">Beschreibung</label>
+      <input id="description" name="description" type="text" required [ngModel]="description()"
+        (ngModelChange)="description.set($event)">
+
+      <label for="category">Kategorie</label>
+      <div class="select-icon">
+        <select id="category" name="category" value="Kategorie auswählen" required [ngModel]="category()"
+          (ngModelChange)="category.set($event)">
+          <option value="" disabled selected>Kategorie auswählen</option>
+          <option value="Miete">Miete</option>
+          <option value="Nebenkosten">Nebenkosten</option>
+          <option value="Gehalt">Gehalt</option>
+          <option value="Einkauf">Einkauf</option>
+          <option value="Sparen">Sparen</option>
+          <option value="Bank">Bank</option>
+          <option value="Versicherung">Versicherung</option>
+          <option value="KFZ">KFZ</option>
+          <option value="Freizeit">Freizeit</option>
+          <option value="Gesundheit">Gesundheit</option>
+          <option value="Garten">Garten</option>
+          <option value="Bildung">Bildung</option>
+          <option value="Sonstiges">Sonstiges</option>
+        </select>
+         <mat-icon>arrow_drop_down</mat-icon>
+      </div>
+      <label for="month">Monat</label>
+      <input id="month" name="month" type="month" required [ngModel]="month()" (ngModelChange)="month.set($event)">
+
+      <label class="recurring-option" for="isRecurring">
+        <input id="isRecurring" name="isRecurring" type="checkbox" [ngModel]="isRecurring()"
+          (ngModelChange)="isRecurring.set($event)">
+        Monat wiederholen
+      </label>
+      <div class="message-section">
+        @if (errorMessage()) {
+        <p class="error-message" role="alert">{{ errorMessage() }}</p>
+        }
+
+        @if (successMessage()) {
+        <p class="success-message" role="status">{{ successMessage() }}</p>
+        }
+
+      </div>
+
+      <div class="button-section">
+        <app-button-components [variant]="'button-gradient'" [buttonType]="'submit'"
+          [label]="saving() ? 'Speichert …' : 'Speichern'" iconName="save"></app-button-components>
+      </div>
+    </form>
   </div>
 </section>

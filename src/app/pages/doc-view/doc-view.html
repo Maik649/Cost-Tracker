@@ -1,212 +1,155 @@
 <section class="page">
   <div class="sub-header-container">
     <div class="sub-header-content-wrapper">
-    <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-kosten" iconName="arrow_back"></app-sub-header>
-    <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+      <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-cost" iconName="arrow_back"></app-sub-header>
+      <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
     </div>
   </div>
   <div class="content-wrapper">
-  @if (loadingEntries()) {
-    <app-loading-spinner ></app-loading-spinner>
-  }
-  @if (storageError()) {
-    <p class="error-message" role="alert">{{ storageError() }}</p>
-  }
-
-  <div class="overview-heading">
-    <div>
-      <h1>Monatsauswahl</h1>
-      <p>Wähle ein Jahr und einen Monat aus.</p>
-    </div>
-    <div class="month-picker">
-      <label for="selectedYear">Jahr auswählen</label>
-      <input id="selectedYear" name="selectedYear" type="number" min="1900" max="9999" step="1"
-        [ngModel]="selectedYear()" (ngModelChange)="updateYear($event)">
-    </div>
-  </div>
-
-  <div class="month-section">
-    <div class="month-grid" role="group" [attr.aria-label]="'Monate ' + selectedYear()">
-      @for (month of yearMonths(); track month.key) {
-      <app-button-components [label]="month.name"
-        [ariaLabel]="'Details für ' + month.name + ' ' + selectedYear() + ' anzeigen'" iconName="calendar_month"
-        [variant]="month.key === selectedMonth() ? 'button-gradient' : 'secondary'" (buttonClick)="showMonth(month.key)" />
-      }
-    </div>
-  </div>
-  <div class="overview-heading monthly-heading">
-    <div>
-      <h2>Monatsdetails</h2>
-    </div>
-  </div>
-
-  <div class="summary-cards" aria-label="Monatssummen">
-    <article class="summary-card income-card">
-      <h2>Einnahmen</h2>
-      <p>{{ totalIncome() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</p>
-    </article>
-    <article class="summary-card expense-card">
-      <h2>Ausgaben</h2>
-      <p>{{ totalExpense() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</p>
-    </article>
-    <article class="summary-card balance-card">
-      <h2>Übrig</h2>
-      <p>{{ balance() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</p>
-    </article>
-  </div>
-
-  @if (editingEntryId()) {
-  <section class="edit-entry-section" aria-labelledby="edit-entry-heading">
-    <h2 id="edit-entry-heading">Eintrag bearbeiten</h2>
-    <form class="edit-entry-form" (ngSubmit)="saveEditedEntry()">
-      <div class="edit-field">
-        <label for="editType">Art des Eintrags</label>
-        <select id="editType" name="editType" [ngModel]="editType()" (ngModelChange)="editType.set($event)">
-          <option value="income">Einnahme</option>
-          <option value="expense">Ausgabe</option>
-        </select>
-      </div>
-      <div class="edit-field">
-        <label for="editAmount">Betrag (€)</label>
-        <input id="editAmount" name="editAmount" type="number" min="0.01" step="0.01" required [ngModel]="editAmount()"
-          (ngModelChange)="updateEditAmount($event)">
-      </div>
-      @if (editIsRecurring()) {
-      <div class="edit-field">
-        <label for="editEffectiveMonth">Neuer Betrag gilt ab</label>
-        <input id="editEffectiveMonth" name="editEffectiveMonth" type="month" required [ngModel]="editEffectiveMonth()"
-          (ngModelChange)="updateEditEffectiveMonth($event)">
-      </div>
-      }
-      <div class="edit-field">
-        <label for="editDescription">Beschreibung</label>
-        <input id="editDescription" name="editDescription" type="text" [ngModel]="editDescription()"
-          (ngModelChange)="editDescription.set($event)">
-      </div>
-      <div class="edit-field">
-        <label for="editCategory">Kategorie</label>
-        <input id="editCategory" name="editCategory" type="text" [ngModel]="editCategory()"
-          (ngModelChange)="editCategory.set($event)">
-      </div>
-      <p class="edit-note">
-        @if (editIsRecurring()) {
-        Der bisherige Betrag bleibt für alle Monate vor diesem Monat erhalten.
-        } @else {
-        Der Wiederholungszeitraum bleibt unverändert.
-        }
-        Pausieren oder reaktivieren kannst du ihn in der Eintragsliste.
-      </p>
-      @if (editError()) {
-      <p class="error-message" role="alert">{{ editError() }}</p>
-      }
-      <div class="edit-form-actions">
-        <app-button-components label="Änderungen speichern" iconName="save" buttonType="submit" variant="button-gradient" />
-        <app-button-components label="Abbrechen"  iconName="close" (buttonClick)="cancelEditing()" variant="button-gradient" />
-      </div>
-    </form>
-  </section>
-  }
-
-  <div class="month-picker sort-picker">
-    <label for="searchTerm">Suchen</label>
-    <input
-      id="searchTerm"
-      class="search-input"
-      name="searchTerm"
-      type="search"
-      placeholder="Beschreibung oder Kategorie"
-      [ngModel]="searchTerm()"
-      (ngModelChange)="searchTerm.set($event)"
-    >
-  </div>
-
-  <section class="entries-section" aria-labelledby="entries-heading">
-    <h2 id="entries-heading" class="entries-heading">Einträge für {{ selectedMonth() }}</h2>
-    <ul class="entry-grid">
-      @for (entry of monthlyEntries(); track entry.id) {
-      <li class="entry-card">
-        <div class="entry-card-header">
-          <span class="type-badge" [class.income-badge]="entry.type === 'income'"
-            [class.expense-badge]="entry.type === 'expense'">
-            {{ entry.type === 'income' ? 'Einnahme' : 'Ausgabe' }}
-          </span>
-          <span class="amount">{{ amountForSelectedMonth(entry) | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
-        </div>
-        <h3 class="entry-title">{{ entry.description || '—' }}</h3>
-        <p class="entry-meta">Kategorie: {{ entry.category || '—' }}</p>
-        <p class="entry-meta">
-          @if (entry.isRecurring && entry.isActive) {
-          Monatlich ab {{ entry.month }}
-          } @else if (entry.isRecurring) {
-          Monatlich ab {{ entry.month }} (pausiert ab {{ entry.endedAtMonth || 'unbekannt' }})
-          } @else {
-          Einmalig
-          }
-        </p>
-        <div class="entry-card-footer">
-          <div class="entry-actions">
-            <app-button-components label=""
-              [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' bearbeiten'"
-              iconName="edit" (buttonClick)="startEditing(entry)" variant="button-gradient" />
-            @if (entry.isRecurring && entry.isActive) {
-            <app-button-components label=""
-              [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' pausieren'"
-              iconName="pause_circle" (buttonClick)="deactivateRecurring(entry.id)" variant="button-gradient" />
-            }
-            <app-button-components label=""
-              [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' löschen'"
-              iconName="delete" variant="button-gradient" (buttonClick)="deleteEntry(entry.id)" />
-          </div>
-        </div>
-      </li>
-      } @empty {
-      <li class="empty-state">Für diesen Monat gibt es noch keine Einträge.</li>
-      }
-    </ul>
-
-    @if (searchActive() && monthlyEntries().length > 0) {
-    <div class="entry-total">
-      @if (searchExpense() > 0) {
-      <p>
-        <span>Ausgaben „{{ searchTerm().trim() }}“ ({{ monthlyEntries().length }} Einträge)</span>
-        <span class="amount">{{ searchExpense() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
-      </p>
-      }
-      @if (searchIncome() > 0) {
-      <p>
-        <span>Einnahmen „{{ searchTerm().trim() }}“</span>
-        <span class="amount">{{ searchIncome() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
-      </p>
-      }
-    </div>
+    @if (loadingEntries()) {
+    <app-loading-spinner></app-loading-spinner>
     }
-  </section>
+    @if (storageError()) {
+    <p class="error-message" role="alert">{{ storageError() }}</p>
+    }
 
-  @if (inactiveRecurringEntries().length > 0) {
-  <section class="paused-section" aria-labelledby="paused-heading">
-    <h2 id="paused-heading">Pausierte Wiederholungen</h2>
-    <ul>
-      @for (entry of inactiveRecurringEntries(); track entry.id) {
-      <li>
-        <span>
-          {{ entry.type === 'income' ? 'Einnahme' : 'Ausgabe' }}:
-          {{ entry.description || entry.category || 'Ohne Bezeichnung' }}
-          ({{ entry.amount | currency:'EUR':'symbol':'1.2-2':'de-DE' }}, pausiert ab {{ entry.endedAtMonth ||
-          'unbekannt' }})
-        </span>
-        <app-button-components label="Wieder aktivieren"
-          [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' wieder aktivieren'"
-          iconName="play_circle" (buttonClick)="reactivateRecurring(entry.id)" />
-        <app-button-components label="Bearbeiten"
-          [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' bearbeiten'"
-          iconName="edit" (buttonClick)="startEditing(entry)" />
-        <app-button-components label="Löschen"
-          [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' löschen'"
-          iconName="delete" variant="danger" (buttonClick)="deleteEntry(entry.id)" />
-      </li>
+    <div class="overview-heading">
+      <div>
+        <h1>Monatsauswahl</h1>
+        <p>Wähle ein Jahr und einen Monat aus.</p>
+      </div>
+      <div class="month-picker">
+        <label for="selectedYear">Jahr auswählen</label>
+        <input id="selectedYear" name="selectedYear" type="number" min="1900" max="9999" step="1"
+          [ngModel]="selectedYear()" (ngModelChange)="updateYear($event)">
+      </div>
+    </div>
+
+    <div class="month-section">
+      <div class="month-grid" role="group" [attr.aria-label]="'Monate ' + selectedYear()">
+        @for (month of yearMonths(); track month.key) {
+        <app-button-components [label]="month.name"
+          [ariaLabel]="'Details für ' + month.name + ' ' + selectedYear() + ' anzeigen'" iconName="calendar_month"
+          [variant]="month.key === selectedMonth() ? 'button-gradient' : 'secondary'"
+          (buttonClick)="showMonth(month.key)" />
+        }
+      </div>
+    </div>
+    <div class="overview-heading monthly-heading">
+      <div>
+        <h2>Monatsdetails</h2>
+      </div>
+    </div>
+
+    <div class="summary-cards" aria-label="Monatssummen">
+      <article class="summary-card income-card">
+        <h2>Einnahmen</h2>
+        <p>{{ totalIncome() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</p>
+      </article>
+      <article class="summary-card expense-card">
+        <h2>Ausgaben</h2>
+        <p>{{ totalExpense() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</p>
+      </article>
+      <article class="summary-card balance-card">
+        <h2>Übrig</h2>
+        <p>{{ balance() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</p>
+      </article>
+    </div>
+
+    <div class="month-picker sort-picker">
+      <label for="searchTerm">Suchen</label>
+      <input id="searchTerm" class="search-input" name="searchTerm" type="search"
+        placeholder="Beschreibung oder Kategorie" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
+    </div>
+
+    <section class="entries-section" aria-labelledby="entries-heading">
+      <h2 id="entries-heading" class="entries-heading">Einträge für {{ selectedMonth() }}</h2>
+      <ul class="entry-grid">
+        @for (entry of monthlyEntries(); track entry.id) {
+        <li class="entry-card">
+          <div class="entry-card-header">
+            <span class="type-badge" [class.income-badge]="entry.type === 'income'"
+              [class.expense-badge]="entry.type === 'expense'">
+              {{ entry.type === 'income' ? 'Einnahme' : 'Ausgabe' }}
+            </span>
+            <span class="amount">{{ amountForSelectedMonth(entry) | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
+          </div>
+          <h3 class="entry-title">{{ entry.description || '—' }}</h3>
+          <p class="entry-meta">Kategorie: {{ entry.category || '—' }}</p>
+          <p class="entry-meta">
+            @if (entry.isRecurring && entry.isActive) {
+            Monatlich ab {{ entry.month }}
+            } @else if (entry.isRecurring) {
+            Monatlich ab {{ entry.month }} (pausiert ab {{ entry.endedAtMonth || 'unbekannt' }})
+            } @else {
+            Einmalig
+            }
+          </p>
+          <div class="entry-card-footer">
+            <div class="entry-actions">
+              <app-button-components label=""
+                [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' bearbeiten'"
+                iconName="edit" (buttonClick)="startEditing(entry)" variant="button-gradient" />
+              @if (entry.isRecurring && entry.isActive) {
+              <app-button-components label=""
+                [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' pausieren'"
+                iconName="pause_circle" (buttonClick)="deactivateRecurring(entry.id)" variant="button-gradient" />
+              }
+              <app-button-components label=""
+                [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' löschen'"
+                iconName="delete" variant="button-gradient" (buttonClick)="deleteEntry(entry.id)" />
+            </div>
+          </div>
+        </li>
+        } @empty {
+        <li class="empty-state">Für diesen Monat gibt es noch keine Einträge.</li>
+        }
+      </ul>
+
+      @if (searchActive() && monthlyEntries().length > 0) {
+      <div class="entry-total">
+        @if (searchExpense() > 0) {
+        <p>
+          <span>Ausgaben „{{ searchTerm().trim() }}“ ({{ monthlyEntries().length }} Einträge)</span>
+          <span class="amount">{{ searchExpense() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
+        </p>
+        }
+        @if (searchIncome() > 0) {
+        <p>
+          <span>Einnahmen „{{ searchTerm().trim() }}“</span>
+          <span class="amount">{{ searchIncome() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
+        </p>
+        }
+      </div>
       }
-    </ul>
-  </section>
-  }
+    </section>
+
+    @if (inactiveRecurringEntries().length > 0) {
+    <section class="paused-section" aria-labelledby="paused-heading">
+      <h2 id="paused-heading">Pausierte Wiederholungen</h2>
+      <ul>
+        @for (entry of inactiveRecurringEntries(); track entry.id) {
+        <li>
+          <span>
+            {{ entry.type === 'income' ? 'Einnahme' : 'Ausgabe' }}:
+            {{ entry.description || entry.category || 'Ohne Bezeichnung' }}
+            ({{ entry.amount | currency:'EUR':'symbol':'1.2-2':'de-DE' }}, pausiert ab {{ entry.endedAtMonth ||
+            'unbekannt' }})
+          </span>
+          <app-button-components label="Wieder aktivieren"
+            [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' wieder aktivieren'"
+            iconName="play_circle" (buttonClick)="reactivateRecurring(entry.id)" />
+          <app-button-components label="Bearbeiten"
+            [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' bearbeiten'"
+            iconName="edit" (buttonClick)="startEditing(entry)" />
+          <app-button-components label="Löschen"
+            [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' löschen'"
+            iconName="delete" variant="danger" (buttonClick)="deleteEntry(entry.id)" />
+        </li>
+        }
+      </ul>
+
+    </section>
+    }
   </div>
-  </section>
+</section>

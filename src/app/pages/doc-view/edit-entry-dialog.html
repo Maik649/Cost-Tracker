@@ -1,0 +1,84 @@
+<h2 mat-dialog-title id="edit-entry-heading">Eintrag bearbeiten</h2>
+
+<form (ngSubmit)="save()">
+  <mat-dialog-content>
+    <div class="edit-field">
+      <label for="editType">Art des Eintrags</label>
+      <div class="select-icon">
+        <select id="editType" name="type" [(ngModel)]="type">
+          <option value="income">Einnahme</option>
+          <option value="expense">Ausgabe</option>
+        </select>
+        <mat-icon aria-hidden="true">arrow_drop_down</mat-icon>
+      </div>
+    </div>
+
+    <div class="edit-field">
+      <label for="editAmount">Betrag (€)</label>
+      <input
+        id="editAmount"
+        name="amount"
+        type="number"
+        min="0.01"
+        step="0.01"
+        required
+        [(ngModel)]="amount"
+      >
+    </div>
+
+    @if (data.entry.isRecurring) {
+      <div class="edit-field">
+        <label for="effectiveMonth">Neuer Betrag gilt ab</label>
+        <input
+          id="effectiveMonth"
+          name="effectiveMonth"
+          type="month"
+          required
+          [(ngModel)]="effectiveMonth"
+        >
+      </div>
+    }
+
+    <div class="edit-field">
+      <label for="editDescription">Beschreibung</label>
+      <input
+        id="editDescription"
+        name="description"
+        type="text"
+        [(ngModel)]="description"
+      >
+    </div>
+
+    <div class="edit-field">
+      <label for="editCategory">Kategorie</label>
+      <div class="select-icon">
+        <select id="editCategory" name="category" [(ngModel)]="category">
+          <option value="">Kategorie auswählen</option>
+          @if (category && !categories.includes(category)) {
+            <option [value]="category">{{ category }}</option>
+          }
+
+          @for (item of categories; track item) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+        <mat-icon aria-hidden="true">arrow_drop_down</mat-icon>
+      </div>
+    </div>
+
+    @if (error) {
+      <p class="error-message" role="alert">{{ error }}</p>
+    }
+
+    @if (data.entry.isRecurring) {
+      <p class="edit-note">
+        Der bisherige Betrag bleibt für alle Monate vor dem gewählten Wirksamkeitsmonat erhalten.
+      </p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Abbrechen</button>
+    <button mat-flat-button type="submit">Änderungen speichern</button>
+  </mat-dialog-actions>
+</form>

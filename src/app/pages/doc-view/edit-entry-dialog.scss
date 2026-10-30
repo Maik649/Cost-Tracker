@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+form {
+  display: grid;
+}
+
+mat-dialog-content {
+  display: grid;
+  gap: 0.9rem;
+  max-height: 70vh;
+}
+
+.edit-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.edit-field label {
+  font-weight: 600;
+}
+
+.edit-field input,
+.edit-field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid #aeb8c6;
+  border-radius: 0.35rem;
+  font: inherit;
+}
+
+.select-icon {
+  position: relative;
+}
+
+.select-icon select {
+  appearance: none;
+  padding-right: 2.25rem;
+
+  &:open+mat-icon {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+.select-icon mat-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.edit-note {
+  margin: 0;
+  color: #4d596b;
+}
+
+.error-message {
+  margin: 0;
+  color: #a3222a;
+}
+
+mat-dialog-actions {
+  gap: 0.5rem;
+}

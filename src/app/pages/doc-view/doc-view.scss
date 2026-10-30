@@ -44,6 +44,7 @@
     font: inherit;
     font-size: clamp(0.85rem, 2.5vw, 1.25rem);
   }
+
   .search-input {
     font-size: clamp(0.85rem, 2.5vw, 1rem);
     width: 100%;
@@ -105,9 +106,9 @@
   max-width: 600px;
   margin: 0.5rem 0 0.5rem;
 
-    @include mixins.Brackpoints('small') {
-     max-width: 320px;
-    }
+  @include mixins.Brackpoints('small') {
+    max-width: 320px;
+  }
 }
 
 .entries-section {
@@ -128,7 +129,7 @@
   margin: 0;
   padding: 0 0.75rem 0 0;
   list-style: none;
-  max-height: 300px;
+  max-height: 450px;
 }
 
 .entry-card {
@@ -222,43 +223,13 @@
   text-align: center;
 }
 
-.edit-entry-section {
-  margin: 1.5rem 0;
-  padding: 1.25rem;
-  border: 1px solid #aeb8c6;
-  border-radius: 0.65rem;
-  background: #f8fafc;
-
-  h2 {
-    margin: 0 0 1rem;
-    font-size: 1.15rem;
-  }
-}
-
-.edit-field {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.edit-note {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: #4d596b;
-}
-
-.edit-form-actions,
 .entry-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.edit-form-actions {
-  grid-column: 1 / -1;
-}
-
 .error-message {
-  grid-column: 1 / -1;
   margin: 0;
   color: #a3222a;
 }

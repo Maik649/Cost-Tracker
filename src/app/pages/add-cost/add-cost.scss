@@ -3,6 +3,7 @@
 h1 {
   margin: 2rem 0 2rem;
   font-size: clamp(1rem, 2.5vw, 1.5rem);
+  text-align: center;
 }
 
 .entry-form {
@@ -12,6 +13,8 @@ h1 {
   border: 1px solid #d8dee8;
   border-radius: 0.65rem;
   background: #fff;
+  max-width: 600px;
+  margin: 0 auto;
 
   label {
     margin-top: 0.55rem;
@@ -28,6 +31,26 @@ h1 {
     border-radius: 0.4rem;
     background: #fff;
     font: inherit;
+  }
+
+  .select-icon:has(mat-icon) {
+    position: relative;
+
+    select:open+mat-icon {
+      transform: rotate(180deg) translateX(0%) translateY(50%);
+    }
+
+    select {
+      appearance: none;
+    }
+
+    mat-icon {
+      position: absolute;
+      right: 0.7rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
   }
 
   input:focus-visible,
@@ -54,6 +77,10 @@ h1 {
     width: 1.1rem;
     height: 1.1rem;
   }
+}
+
+.message-section {
+  min-height: 30px;
 }
 
 .error-message {
