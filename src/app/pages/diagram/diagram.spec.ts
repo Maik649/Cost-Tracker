@@ -24,6 +24,7 @@ describe('Diagram', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     await fixture.whenStable();
+    await vi.waitFor(() => expect(loadCostEntries).toHaveBeenCalled());
     fixture.detectChanges();
   }
 
@@ -84,6 +85,39 @@ describe('Diagram', () => {
     component.selectMonth(previousMonth);
 
     expect(component.categoryTotals()[0]?.amount).toBe(50);
+  });
+
+  it('counts quarterly and yearly recurring expenses only in their occurrence months', async () => {
+    await initialize([
+      makeEntry({
+        id: 'quarterly',
+        category: 'Versicherung',
+        amount: 30,
+        month: '2025-01',
+        isRecurring: true,
+        recurrenceInterval: 'quarterly',
+      }),
+      makeEntry({
+        id: 'yearly',
+        category: 'Mitgliedschaft',
+        amount: 80,
+        month: '2024-06',
+        isRecurring: true,
+        recurrenceInterval: 'yearly',
+      }),
+    ]);
+
+    component.selectMonth('2025-03');
+    expect(component.totalExpenses()).toBe(0);
+
+    component.selectMonth('2025-04');
+    expect(component.totalExpenses()).toBe(30);
+
+    component.selectMonth('2025-06');
+    expect(component.totalExpenses()).toBe(80);
+
+    component.selectMonth('2025-07');
+    expect(component.totalExpenses()).toBe(30);
   });
 
   it('allows selecting future months and calculates ongoing recurring expenses there', async () => {

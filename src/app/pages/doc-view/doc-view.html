@@ -1,8 +1,8 @@
 <section class="page">
   <div class="sub-header-container">
     <div class="sub-header-content-wrapper">
-      <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-cost" iconName="arrow_back"></app-sub-header>
-      <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+      <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-cost" iconName="add_box"></app-sub-header>
+      <app-sub-header title="Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
     </div>
   </div>
   <div class="content-wrapper">
@@ -78,9 +78,9 @@
           <p class="entry-meta">Kategorie: {{ entry.category || '—' }}</p>
           <p class="entry-meta">
             @if (entry.isRecurring && entry.isActive) {
-            Monatlich ab {{ entry.month }}
+            {{ recurrenceLabel(entry) }} ab {{ entry.month }}
             } @else if (entry.isRecurring) {
-            Monatlich ab {{ entry.month }} (pausiert ab {{ entry.endedAtMonth || 'unbekannt' }})
+            {{ recurrenceLabel(entry) }} ab {{ entry.month }} (pausiert ab {{ entry.endedAtMonth || 'unbekannt' }})
             } @else {
             Einmalig
             }
@@ -95,7 +95,7 @@
                 [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' pausieren'"
                 iconName="pause_circle" (buttonClick)="deactivateRecurring(entry.id)" variant="button-gradient" />
               }
-              <app-button-components label=""
+              <app-button-components label="" 
                 [ariaLabel]="'Eintrag ' + (entry.description || entry.category || 'Ohne Bezeichnung') + ' löschen'"
                 iconName="delete" variant="button-gradient" (buttonClick)="deleteEntry(entry.id)" />
             </div>
@@ -133,8 +133,8 @@
           <span>
             {{ entry.type === 'income' ? 'Einnahme' : 'Ausgabe' }}:
             {{ entry.description || entry.category || 'Ohne Bezeichnung' }}
-            ({{ entry.amount | currency:'EUR':'symbol':'1.2-2':'de-DE' }}, pausiert ab {{ entry.endedAtMonth ||
-            'unbekannt' }})
+            ({{ recurrenceLabel(entry) }}, {{ entry.amount | currency:'EUR':'symbol':'1.2-2':'de-DE' }},
+            pausiert ab {{ entry.endedAtMonth || 'unbekannt' }})
           </span>
           <app-button-components label="Wieder aktivieren"
             [ariaLabel]="'Wiederholung für ' + (entry.description || entry.category || 'Eintrag') + ' wieder aktivieren'"

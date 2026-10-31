@@ -1,4 +1,5 @@
 export type CostType = 'income' | 'expense';
+export type RecurrenceInterval = 'monthly' | 'quarterly' | 'yearly';
 
 export interface CostEntry {
   id: string;
@@ -8,6 +9,8 @@ export interface CostEntry {
   category: string;
   month: string;
   isRecurring: boolean;
+  recurrenceInterval?: RecurrenceInterval;
+  isYearly?: boolean;
   isActive: boolean;
   endedAtMonth: string | null;
   recurrencePeriods?: RecurrencePeriod[];
@@ -41,12 +44,7 @@ export function parseStoredCostEntries(savedEntries: string | null): CostEntry[]
 
   return parsedEntries.flatMap((entry: unknown, index: number) => {
     if (isCostEntry(entry)) {
-      return [{
-        ...entry,
-        endedAtMonth: entry.endedAtMonth ?? null,
-        recurrencePeriods: getRecurrencePeriods(entry),
-        amountPeriods: getAmountPeriods(entry),
-      }];
+      return [normalizeCostEntry(entry)];
     }
 
     if (isLegacyCostEntry(entry)) {
@@ -84,10 +82,7 @@ export function parseBackupJson(text: string): CostEntry[] {
     }
     ids.add(entry.id);
     return {
-      ...entry,
-      endedAtMonth: entry.endedAtMonth ?? null,
-      recurrencePeriods: getRecurrencePeriods(entry),
-      amountPeriods: getAmountPeriods(entry),
+      ...normalizeCostEntry(entry),
     };
   });
 }
@@ -106,6 +101,8 @@ function isCostEntry(value: unknown): value is CostEntry {
     && typeof entry['category'] === 'string'
     && isMonthKey(entry['month'])
     && typeof entry['isRecurring'] === 'boolean'
+    && (entry['recurrenceInterval'] === undefined || isRecurrenceInterval(entry['recurrenceInterval']))
+    && (entry['isYearly'] === undefined || typeof entry['isYearly'] === 'boolean')
     && typeof entry['isActive'] === 'boolean'
     && (entry['endedAtMonth'] === undefined || entry['endedAtMonth'] === null || isMonthKey(entry['endedAtMonth']))
     && (entry['recurrencePeriods'] === undefined
@@ -166,6 +163,7 @@ function migrateLegacyEntry(
       type: 'income',
       amount: entry.income,
       isRecurring: entry.isIncome ?? false,
+      recurrenceInterval: 'monthly',
     });
   }
 
@@ -176,6 +174,7 @@ function migrateLegacyEntry(
       type: 'expense',
       amount: entry.expense,
       isRecurring: entry.isExpense ?? false,
+      recurrenceInterval: 'monthly',
     });
   }
 
@@ -184,6 +183,25 @@ function migrateLegacyEntry(
 
 function isMonthKey(value: unknown): value is string {
   return typeof value === 'string' && /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
+}
+
+function isRecurrenceInterval(value: unknown): value is RecurrenceInterval {
+  return value === 'monthly' || value === 'quarterly' || value === 'yearly';
+}
+
+export function normalizeCostEntry(entry: CostEntry): CostEntry {
+  const isLegacyYearly = entry.recurrenceInterval === undefined && entry.isYearly === true;
+  const normalizedEntry = { ...entry };
+  delete normalizedEntry.isYearly;
+  return {
+    ...normalizedEntry,
+    isRecurring: entry.isRecurring || isLegacyYearly,
+    recurrenceInterval: entry.recurrenceInterval
+      ?? (isLegacyYearly ? 'yearly' : 'monthly'),
+    endedAtMonth: entry.endedAtMonth ?? null,
+    recurrencePeriods: getRecurrencePeriods(entry),
+    amountPeriods: getAmountPeriods(entry),
+  };
 }
 
 function isRecurrencePeriod(value: unknown): value is RecurrencePeriod {
@@ -205,6 +223,30 @@ export function getRecurrencePeriods(entry: CostEntry): RecurrencePeriod[] {
     startMonth: entry.month,
     endMonth: entry.isActive ? null : entry.endedAtMonth,
   }];
+}
+
+export function getRecurrenceInterval(entry: CostEntry): RecurrenceInterval {
+  return entry.recurrenceInterval ?? (entry.isYearly ? 'yearly' : 'monthly');
+}
+
+export function occursInMonth(entry: CostEntry, month: string): boolean {
+  if (!entry.isRecurring) {
+    return entry.month === month;
+  }
+
+  const interval = getRecurrenceInterval(entry);
+  const intervalMonths = interval === 'quarterly' ? 3 : interval === 'yearly' ? 12 : 1;
+
+  return getRecurrencePeriods(entry).some(period => {
+    if (period.startMonth > month || (period.endMonth !== null && month >= period.endMonth)) {
+      return false;
+    }
+
+    const [startYear, startMonth] = period.startMonth.split('-').map(Number);
+    const [year, monthNumber] = month.split('-').map(Number);
+    const monthsSinceStart = (year - startYear) * 12 + monthNumber - startMonth;
+    return monthsSinceStart % intervalMonths === 0;
+  });
 }
 
 export function getAmountPeriods(entry: CostEntry): AmountPeriod[] {

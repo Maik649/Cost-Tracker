@@ -16,7 +16,9 @@ import {
   amountForMonth,
   CostEntry,
   currentMonthKey,
+  getRecurrenceInterval,
   getRecurrencePeriods,
+  occursInMonth,
   setAmountFromMonth,
 } from '../../models/cost-entry';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
@@ -184,6 +186,17 @@ export class DocView implements OnInit {
     return amountForMonth(entry, this.selectedMonth());
   }
 
+  recurrenceLabel(entry: CostEntry): string {
+    switch (getRecurrenceInterval(entry)) {
+      case 'quarterly':
+        return 'Vierteljährlich';
+      case 'yearly':
+        return 'Jährlich';
+      default:
+        return 'Monatlich';
+    }
+  }
+
   async saveEditedEntry(entryId: string, changes: EditEntryResult): Promise<void> {
     const existingEntry = this.CostList().find(entry => entry.id === entryId);
     if (!existingEntry) {
@@ -196,6 +209,9 @@ export class DocView implements OnInit {
       amount: changes.amount,
       description: changes.description.trim(),
       category: changes.category.trim(),
+      ...(existingEntry.isRecurring
+        ? { recurrenceInterval: changes.recurrenceInterval }
+        : {}),
       ...(existingEntry.isRecurring
         ? {
             amountPeriods: setAmountFromMonth(
@@ -269,11 +285,7 @@ export class DocView implements OnInit {
 }
 
 function isEntryInMonth(entry: CostEntry, month: string): boolean {
-  return entry.isRecurring
-    ? getRecurrencePeriods(entry).some(period =>
-      period.startMonth <= month && (period.endMonth === null || month < period.endMonth),
-    )
-    : entry.month === month;
+  return occursInMonth(entry, month);
 }
 
 function followingMonthKey(month: string): string {

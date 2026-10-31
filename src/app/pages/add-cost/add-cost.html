@@ -1,8 +1,8 @@
 <section class="page">
   <div class="sub-header-container">
     <div class="sub-header-content-wrapper">
-      <app-sub-header title="Zur Monatsübersicht" subHeaderPath="/doc-view" iconName="arrow_back"></app-sub-header>
-      <app-sub-header title="Zum Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+      <app-sub-header title="Monatsübersicht" subHeaderPath="/doc-view" iconName="insert_invitation"></app-sub-header>
+      <app-sub-header title="Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
     </div>
   </div>
   <div class="content-wrapper">
@@ -45,6 +45,7 @@
           <option value="Gesundheit">Gesundheit</option>
           <option value="Garten">Garten</option>
           <option value="Bildung">Bildung</option>
+          <option value="Bestellungen">Bestellungen</option>
           <option value="Sonstiges">Sonstiges</option>
         </select>
          <mat-icon>arrow_drop_down</mat-icon>
@@ -55,8 +56,20 @@
       <label class="recurring-option" for="isRecurring">
         <input id="isRecurring" name="isRecurring" type="checkbox" [ngModel]="isRecurring()"
           (ngModelChange)="isRecurring.set($event)">
-        Monat wiederholen
+        Eintrag wiederholen
       </label>
+      @if (isRecurring()) {
+      <label for="recurrenceInterval">Wiederholung</label>
+      <div class="select-icon">
+        <select id="recurrenceInterval" name="recurrenceInterval" [ngModel]="recurrenceInterval()"
+          (ngModelChange)="recurrenceInterval.set($event)">
+          <option value="monthly">Monatlich</option>
+          <option value="quarterly">Vierteljährlich (alle 3 Monate)</option>
+          <option value="yearly">Jährlich</option>
+        </select>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </div>
+      }
       <div class="message-section">
         @if (errorMessage()) {
         <p class="error-message" role="alert">{{ errorMessage() }}</p>

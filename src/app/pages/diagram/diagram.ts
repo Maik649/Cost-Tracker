@@ -5,7 +5,7 @@ import {
   amountForMonth,
   CostEntry,
   currentMonthKey,
-  getRecurrencePeriods,
+  occursInMonth,
 } from '../../models/cost-entry';
 import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
@@ -93,12 +93,7 @@ export class Diagram implements OnInit {
         continue;
       }
 
-      const occursInSelectedMonth = entry.isRecurring
-        ? getRecurrencePeriods(entry).some(period =>
-          period.startMonth <= month && (period.endMonth === null || month < period.endMonth),
-        )
-        : entry.month === month;
-      if (occursInSelectedMonth) {
+      if (occursInMonth(entry, month)) {
         addAmount(entry);
       }
     }

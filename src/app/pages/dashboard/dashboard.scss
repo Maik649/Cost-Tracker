@@ -74,12 +74,17 @@ mat-toolbar {
 .dashboard-buttons {
   display: flex;
   gap: 1rem;
+  color: #ffffff;
 
   & .button-gradient {
     padding: 4rem 3rem;
     text-decoration: unset;
     font-size: 1.25rem;
-    color: var.$color-text;
+    color: #ffffff;
+
+    & span {
+      color: #ffffff;
+    }
   }
 
   @include mixins.Brackpoints('small') {

@@ -28,6 +28,22 @@
 
     @if (data.entry.isRecurring) {
       <div class="edit-field">
+        <label for="recurrenceInterval">Wiederholung</label>
+        <div class="select-icon">
+          <select
+            id="recurrenceInterval"
+            name="recurrenceInterval"
+            [(ngModel)]="recurrenceInterval"
+          >
+            <option value="monthly">Monatlich</option>
+            <option value="quarterly">Vierteljährlich (alle 3 Monate)</option>
+            <option value="yearly">Jährlich</option>
+          </select>
+          <mat-icon aria-hidden="true">arrow_drop_down</mat-icon>
+        </div>
+      </div>
+
+      <div class="edit-field">
         <label for="effectiveMonth">Neuer Betrag gilt ab</label>
         <input
           id="effectiveMonth"
@@ -72,7 +88,7 @@
 
     @if (data.entry.isRecurring) {
       <p class="edit-note">
-        Der bisherige Betrag bleibt für alle Monate vor dem gewählten Wirksamkeitsmonat erhalten.
+        Das Wiederholungsintervall gilt für alle aktiven Abschnitte. Der bisherige Betrag bleibt vor dem gewählten Wirksamkeitsmonat erhalten.
       </p>
     }
   </mat-dialog-content>

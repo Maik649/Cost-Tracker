@@ -31,7 +31,7 @@
       text-decoration: none;
     }
     & span {
-      color: $color-text;
+      color: #ffffff;
     }
   }
 
@@ -79,4 +79,6 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: $font-family;
     color: $color-text;
+    text-wrap: nowrap;
+    white-space: nowrap;
   }

@@ -7,7 +7,12 @@ import {
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { CostEntry, CostType } from '../../models/cost-entry';
+import {
+  CostEntry,
+  CostType,
+  getRecurrenceInterval,
+  RecurrenceInterval,
+} from '../../models/cost-entry';
 
 export interface EditEntryDialogData {
   entry: CostEntry;
@@ -20,6 +25,7 @@ export interface EditEntryResult {
   description: string;
   category: string;
   effectiveMonth: string;
+  recurrenceInterval: RecurrenceInterval;
 }
 
 @Component({
@@ -38,6 +44,7 @@ export class EditEntryDialog {
   amount: number | null = this.data.entry.amount;
   description = this.data.entry.description;
   category = this.data.entry.category;
+  recurrenceInterval = getRecurrenceInterval(this.data.entry);
 
   effectiveMonth =
     this.data.selectedMonth >= this.data.entry.month
@@ -49,7 +56,7 @@ export class EditEntryDialog {
   readonly categories = [
     'Miete', 'Nebenkosten', 'Gehalt', 'Einkauf', 'Sparen',
     'Bank', 'Versicherung', 'KFZ', 'Freizeit', 'Gesundheit',
-    'Garten', 'Bildung', 'Sonstiges',
+    'Garten', 'Bildung', 'Bestellungen', 'Sonstiges',
   ];
 
   save(): void {
@@ -85,6 +92,7 @@ export class EditEntryDialog {
       description: this.description,
       category: this.category,
       effectiveMonth: this.effectiveMonth,
+      recurrenceInterval: this.recurrenceInterval,
     });
   }
 }

@@ -4,7 +4,9 @@
     @if (iconName()) {
       <mat-icon aria-hidden="true">{{ iconName() }}</mat-icon>
     }
-    <span>{{ label() }}</span>
+    @if (hasLabel()) {
+      <span>{{ label().trim() }}</span>
+    }
   </a>
 } @else {
   <button class="button" [class.button--primary]="variant() === 'primary'"
@@ -14,6 +16,8 @@
     @if (iconName()) {
       <mat-icon aria-hidden="true">{{ iconName() }}</mat-icon>
     }
-    <span>{{ label() }}</span>
+    @if (hasLabel()) {
+      <span>{{ label().trim() }}</span>
+    }
   </button>
 }

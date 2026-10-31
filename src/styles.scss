@@ -46,7 +46,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -54,6 +54,7 @@ body {
   background-image: linear-gradient(to bottom right, #ffffff, #d8dee8);
 
   @include mixins.Brackpoints('small') {
+    position: fixed;
     justify-content: center;
     flex-direction: column;
   }
@@ -62,7 +63,7 @@ body {
 .sub-header-content-wrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   width: 100%;
   max-width: var.$max-width;
   padding: 0 1rem;
@@ -87,7 +88,7 @@ body {
 
   & .content-wrapper  {
     padding: 0 1rem;
-    width: calc(100vw - 2rem);
+    width: calc(100vw - 3rem);
     max-width: var.$max-width;
   }
 }

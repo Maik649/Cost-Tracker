@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 
@@ -13,6 +13,7 @@ export type ButtonType = 'button' | 'submit';
 })
 export class ButtonComponents {
   label = input.required<string>();
+  hasLabel = computed(() => this.label().trim().length > 0);
   routerLink = input<string | null>(null);
   buttonType = input<ButtonType>('button');
   variant = input<ButtonVariant>('secondary');

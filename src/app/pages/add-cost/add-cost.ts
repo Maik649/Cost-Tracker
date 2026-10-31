@@ -8,6 +8,7 @@ import {
   CostEntry,
   CostType,
   currentMonthKey,
+  RecurrenceInterval,
 } from '../../models/cost-entry';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
 
@@ -26,6 +27,7 @@ export class AddCost implements OnInit {
   category = signal('');
   month = signal(currentMonthKey());
   isRecurring = signal(false);
+  recurrenceInterval = signal<RecurrenceInterval>('monthly');
   errorMessage = signal('');
   successMessage = signal('');
   loadingEntries = signal(true);
@@ -87,6 +89,7 @@ export class AddCost implements OnInit {
       category: this.category().trim(),
       month: this.month(),
       isRecurring: this.isRecurring(),
+      recurrenceInterval: this.recurrenceInterval(),
       isActive: true,
       endedAtMonth: null,
     };
@@ -109,6 +112,7 @@ export class AddCost implements OnInit {
     this.description.set('');
     this.category.set('');
     this.isRecurring.set(false);
+    this.recurrenceInterval.set('monthly');
   }
 }
 

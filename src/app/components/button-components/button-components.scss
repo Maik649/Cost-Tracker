@@ -41,7 +41,7 @@
 
 .button--danger {
   border-color: #9d252b;
-  color: #8f2027;
+   color: #8f2027;
 }
 
 .button--danger:hover {
@@ -56,6 +56,7 @@
 
 .button--button-gradient:hover {
   background: linear-gradient(to bottom left, rgb(129, 203, 221), rgb(52, 53, 119));
+  color: #fff;
 }
 
 .button mat-icon {

@@ -10,7 +10,34 @@
 
   <section class="settings-card" aria-labelledby="backup-heading">
     <h2 id="backup-heading">Datensicherung</h2>
-    <p>Exportiere alle Einträge als JSON-Datei oder stelle sie aus einer Sicherung wieder her. Beim Import werden die aktuellen Einträge ersetzt.</p>
+    <p>Du kannst eine vorhandene JSON-Datei als Ziel für ein automatisches Backup auswählen. Sie wird nach jeder gespeicherten Änderung mit dem aktuellen Datenstand überschrieben. Die Einträge in der App bleiben unabhängig davon in IndexedDB gespeichert.</p>
+    @if (backupStore.automaticBackupSupported) {
+      @if (backupStore.automaticBackupError()) {
+        <p class="backup-error" role="alert">{{ backupStore.automaticBackupError() }}</p>
+      }
+      @if (!backupStore.automaticBackupSettingsLoaded()) {
+        <p role="status">Backup-Einstellungen werden geladen.</p>
+      } @else if (backupStore.automaticBackupFileName(); as fileName) {
+        <p>Automatisches Backup aktiv: <strong>{{ fileName }}</strong></p>
+        @if (backupStore.automaticBackupLastSaved(); as lastSaved) {
+          <p>Letzte Sicherung: {{ lastSaved }}</p>
+        }
+        <div class="settings-actions">
+          <app-button-components variant="button-gradient" label="Backup jetzt aktualisieren" iconName="sync" (buttonClick)="updateAutomaticBackupNow()" />
+          <app-button-components variant="secondary" label="Automatisches Backup ausschalten" iconName="close" (buttonClick)="disableAutomaticBackup()" />
+        </div>
+      } @else if (!backupStore.automaticBackupError()) {
+        <p>Noch keine Datei ausgewählt. Beim Einrichten wird sie sofort mit allen aktuellen Einträgen überschrieben. Der Browser kann nach einem Neustart erneut nach der Schreibberechtigung fragen.</p>
+        <div class="settings-actions">
+          <app-button-components variant="button-gradient" label="Backup-Datei auswählen" iconName="save" (buttonClick)="selectAutomaticBackupFile()" />
+        </div>
+      }
+    } @else {
+      <p>Automatische Datei-Sicherung wird von diesem Browser nicht unterstützt. Nutze stattdessen den manuellen Export und Import.</p>
+    }
+
+    <h3>Manueller Export und Import</h3>
+    <p>Beim Import werden alle aktuellen Einträge durch die ausgewählte Sicherung ersetzt.</p>
     <div class="settings-actions">
       <app-button-components variant="button-gradient" label="Backup exportieren" iconName="download" (buttonClick)="exportBackup()" />
       <app-button-components variant="button-gradient" label="Backup importieren" iconName="upload" (buttonClick)="importInput.click()" />

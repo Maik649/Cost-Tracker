@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ButtonComponents } from '../../components/button-components/button-components';
 import { SubHeader } from '../../components/sub-header/sub-header';
 import { createBackupJson, parseBackupJson } from '../../models/cost-entry';
@@ -11,10 +11,49 @@ import { CostEntryStore } from '../../services/cost-entry-store.service';
   styleUrl: './settings.scss',
 })
 
-export class Settings {
+export class Settings implements OnInit {
   private readonly costEntryStore = inject(CostEntryStore);
+  readonly backupStore = this.costEntryStore;
   backupMessage = signal('');
   backupIsError = signal(false);
+
+  ngOnInit(): void {
+    void this.costEntryStore.loadAutomaticBackupSettings();
+  }
+
+  async selectAutomaticBackupFile(): Promise<void> {
+    try {
+      await this.costEntryStore.selectAutomaticBackupFile();
+      this.showMessage('Backup-Datei ausgewählt und automatisch aktualisiert.', false);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        return;
+      }
+      this.showMessage(errorMessage(error), true);
+    }
+  }
+
+  async updateAutomaticBackupNow(): Promise<void> {
+    try {
+      await this.costEntryStore.updateAutomaticBackupNow();
+      this.showMessage('Backup-Datei wurde aktualisiert.', false);
+    } catch (error) {
+      this.showMessage(errorMessage(error), true);
+    }
+  }
+
+  async disableAutomaticBackup(): Promise<void> {
+    if (!window.confirm('Automatisches Backup ausschalten? Die Backup-Datei bleibt erhalten.')) {
+      return;
+    }
+
+    try {
+      await this.costEntryStore.disableAutomaticBackup();
+      this.showMessage('Automatisches Backup wurde ausgeschaltet.', false);
+    } catch (error) {
+      this.showMessage(errorMessage(error), true);
+    }
+  }
 
   async exportBackup(): Promise<void> {
     try {

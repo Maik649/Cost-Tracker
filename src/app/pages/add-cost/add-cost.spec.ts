@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { AddCost } from './add-cost';
 import { CostEntry, parseStoredCostEntries } from '../../models/cost-entry';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('AddCost', () => {
   let component: AddCost;
@@ -52,6 +52,7 @@ describe('AddCost', () => {
       category: 'Arbeit',
       month: '2026-10',
       isRecurring: true,
+      recurrenceInterval: 'monthly',
       isActive: true,
     });
     expect(component.successMessage()).toBe('Eintrag wurde erfolgreich gespeichert.');
@@ -61,14 +62,35 @@ describe('AddCost', () => {
       .toContain('Eintrag wurde erfolgreich gespeichert.');
   });
 
+  it('saves a quarterly or yearly recurrence interval', async () => {
+    component.amount.set(120);
+    component.category.set('Versicherung');
+    component.isRecurring.set(true);
+    component.recurrenceInterval.set('quarterly');
+
+    await component.addCost();
+
+    expect(costEntryStore.saveCostEntries.mock.calls[0][0][0].recurrenceInterval).toBe('quarterly');
+
+    component.amount.set(240);
+    component.category.set('Versicherung');
+    component.isRecurring.set(true);
+    component.recurrenceInterval.set('yearly');
+
+    await component.addCost();
+
+    expect(costEntryStore.saveCostEntries.mock.calls[1][0][1].recurrenceInterval).toBe('yearly');
+  });
+
   it('does not show success when the entry cannot be saved', async () => {
     component.amount.set(25);
+    component.category.set('Sonstiges');
     costEntryStore.saveCostEntries.mockRejectedValue(new Error('Storage is full'));
 
     await component.addCost();
 
     expect(component.successMessage()).toBe('');
-    expect(component.errorMessage()).toContain('Der Eintrag konnte nicht gespeichert werden');
+    expect(component.errorMessage()).toContain('Der Eintrag konnte nicht in IndexedDB gespeichert werden');
     expect(component.costEntries()).toHaveLength(0);
 
   });
@@ -79,7 +101,7 @@ describe('AddCost', () => {
     component.addCost();
 
     expect(component.successMessage()).toBe('');
-    expect(component.errorMessage()).toContain('Betrag größer als 0');
+    expect(component.errorMessage()).toContain('Bitte gib einen Betrag');
   });
 
   it('migrates saved entries from the previous format', () => {

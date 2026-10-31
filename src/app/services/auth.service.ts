@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly storageKey = 'timeTrackerAuthenticated';
+  private readonly storageKey = 'CostTrackerAuthenticated';
   readonly isAuthenticated = signal(
     typeof sessionStorage !== 'undefined' &&
       sessionStorage.getItem(this.storageKey) === 'true',
