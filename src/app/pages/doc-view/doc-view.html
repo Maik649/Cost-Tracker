@@ -77,7 +77,7 @@
           <h3 class="entry-title">{{ entry.description || '—' }}</h3>
           <p class="entry-meta">Kategorie: {{ entry.category || '—' }}</p>
           <p class="entry-meta">
-            Erfasst am: {{ entry.createdAt ? (entry.createdAt | date:'dd.MM.yyyy, HH:mm':undefined:'de-DE') : '—' }}
+            Erfasst: {{ entry.createdAt ? (entry.createdAt | date:'dd.MM.yyyy':undefined:'de-DE') : '—' }}
           </p>
           <p class="entry-meta">
             @if (entry.isRecurring && entry.isActive) {
