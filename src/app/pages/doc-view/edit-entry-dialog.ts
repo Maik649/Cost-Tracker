@@ -56,7 +56,7 @@ export class EditEntryDialog {
   readonly categories = [
     'Miete', 'Nebenkosten', 'Gehalt', 'Einkauf', 'Sparen',
     'Bank', 'Versicherung', 'KFZ', 'Freizeit', 'Gesundheit',
-    'Garten', 'Bildung', 'Bestellungen', 'Sonstiges',
+    'Garten', 'Bildung', 'Bestellungen', 'Sonstiges','Arbeit','Taback'
   ];
 
   save(): void {

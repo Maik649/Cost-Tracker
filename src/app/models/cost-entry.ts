@@ -8,6 +8,7 @@ export interface CostEntry {
   description: string;
   category: string;
   month: string;
+  createdAt?: string;
   isRecurring: boolean;
   recurrenceInterval?: RecurrenceInterval;
   isYearly?: boolean;
@@ -100,6 +101,8 @@ function isCostEntry(value: unknown): value is CostEntry {
     && typeof entry['description'] === 'string'
     && typeof entry['category'] === 'string'
     && isMonthKey(entry['month'])
+    && (entry['createdAt'] === undefined
+      || (typeof entry['createdAt'] === 'string' && !Number.isNaN(Date.parse(entry['createdAt']))))
     && typeof entry['isRecurring'] === 'boolean'
     && (entry['recurrenceInterval'] === undefined || isRecurrenceInterval(entry['recurrenceInterval']))
     && (entry['isYearly'] === undefined || typeof entry['isYearly'] === 'boolean')
@@ -150,6 +153,7 @@ function migrateLegacyEntry(
     description: entry.description ?? '',
     category: entry.art ?? '',
     month,
+    createdAt: new Date().toISOString(),
     isActive: true,
     endedAtMonth: null,
     recurrencePeriods: [],

@@ -77,6 +77,9 @@
           <h3 class="entry-title">{{ entry.description || '—' }}</h3>
           <p class="entry-meta">Kategorie: {{ entry.category || '—' }}</p>
           <p class="entry-meta">
+            Erfasst am: {{ entry.createdAt ? (entry.createdAt | date:'dd.MM.yyyy, HH:mm':undefined:'de-DE') : '—' }}
+          </p>
+          <p class="entry-meta">
             @if (entry.isRecurring && entry.isActive) {
             {{ recurrenceLabel(entry) }} ab {{ entry.month }}
             } @else if (entry.isRecurring) {

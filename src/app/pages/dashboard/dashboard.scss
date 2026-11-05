@@ -75,6 +75,7 @@ mat-toolbar {
   display: flex;
   gap: 1rem;
   color: #ffffff;
+  padding: 0 1rem ;
 
   & .button-gradient {
     padding: 4rem 3rem;
@@ -87,7 +88,7 @@ mat-toolbar {
     }
   }
 
-  @include mixins.Brackpoints('small') {
+  @include mixins.Brackpoints('compact') {
     flex-direction: column;
     align-items: stretch;
 

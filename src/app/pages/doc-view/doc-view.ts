@@ -1,4 +1,4 @@
-import { CurrencyPipe, registerLocaleData } from '@angular/common';
+import { CurrencyPipe, DatePipe, registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +39,11 @@ const monthsOfYear = [
   { number: 12, name: 'Dez.' },
 ];
 
-type SortMode = 'description' | 'amount' | 'none';
+type SortMode = 'created' | 'description' | 'amount' | 'none';
+
+function createdTime(entry: CostEntry): number {
+  return entry.createdAt ? Date.parse(entry.createdAt) : Number.NEGATIVE_INFINITY;
+}
 
 function entryLabel(entry: CostEntry): string {
   return entry.description.trim() || entry.category.trim() || 'Ohne Bezeichnung';
@@ -49,8 +53,9 @@ function entryLabel(entry: CostEntry): string {
   selector: 'app-doc-view',
   templateUrl: './doc-view.html',
   styleUrls: ['./doc-view.scss'],
-  imports: [ButtonComponents, CurrencyPipe, FormsModule, SubHeader, LoadingSpinner],
+  imports: [ButtonComponents, CurrencyPipe, DatePipe, FormsModule, SubHeader, LoadingSpinner],
 })
+
 export class DocView implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly costEntryStore = inject(CostEntryStore);
@@ -59,7 +64,7 @@ export class DocView implements OnInit {
   CostList = signal<CostEntry[]>([]);
   loadingEntries = signal(true);
   storageError = signal('');
-  sortMode = signal<SortMode>('description');
+  sortMode = signal<SortMode>('created');
   searchTerm = signal('');
 
   ngOnInit(): void {
@@ -101,15 +106,19 @@ export class DocView implements OnInit {
     if (mode === 'none') {
       return entries;
     }
-    return [...entries].sort((a, b) =>
-      mode === 'amount'
-        ? amountForMonth(b, month) - amountForMonth(a, month)
-        : entryLabel(a).localeCompare(entryLabel(b), 'de'),
-    );
+    return [...entries].sort((a, b) => {
+      switch (mode) {
+        case 'created':
+          return createdTime(b) - createdTime(a) || entryLabel(a).localeCompare(entryLabel(b), 'de');
+        case 'amount':
+          return amountForMonth(b, month) - amountForMonth(a, month);
+        default:
+          return entryLabel(a).localeCompare(entryLabel(b), 'de');
+      }
+    });
   });
 
   searchActive = computed(() => this.searchTerm().trim().length > 0);
-
   searchIncome = computed(() => this.sumByType('income'));
   searchExpense = computed(() => this.sumByType('expense'));
 

@@ -88,6 +88,7 @@ export class AddCost implements OnInit {
       description: this.description().trim(),
       category: this.category().trim(),
       month: this.month(),
+      createdAt: new Date().toISOString(),
       isRecurring: this.isRecurring(),
       recurrenceInterval: this.recurrenceInterval(),
       isActive: true,
