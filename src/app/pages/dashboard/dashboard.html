@@ -20,13 +20,13 @@
       <span class="dashboard-nav-title">Dashboard</span>
       <span class="spacer"></span>
       <nav class="dashboard-nav" aria-label="Hauptnavigation">
+        <a class="button-gradient" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
+        <a class="button-gradient" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</a>
         <span class="user-badge"
           [attr.title]="auth.currentUser()?.email ?? 'Gast'"
           [attr.aria-label]="auth.isGuest() ? 'Gast' : 'Angemeldet als ' + (auth.currentUser()?.email ?? '')">
           {{ auth.headerUserLabel() }}
         </span>
-        <a class="button-gradient" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
-        <a class="button-gradient" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</a>
       </nav>
     </div>
     </mat-toolbar>
