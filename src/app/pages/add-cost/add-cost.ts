@@ -42,9 +42,7 @@ export class AddCost implements OnInit {
     try {
       this.costEntries.set(await this.costEntryStore.loadCostEntries());
     } catch (error) {
-      this.errorMessage.set(
-        `Gespeicherte Einträge konnten nicht aus IndexedDB geladen werden: ${errorMessage(error)}`,
-      );
+      this.errorMessage.set(`Gespeicherte Einträge konnten nicht geladen werden: ${errorMessage(error)}`);
     } finally {
       this.loadingEntries.set(false);
     }
@@ -100,7 +98,7 @@ export class AddCost implements OnInit {
     try {
       await this.costEntryStore.saveCostEntries(updatedEntries);
     } catch (error) {
-      this.errorMessage.set(`Der Eintrag konnte nicht in IndexedDB gespeichert werden: ${errorMessage(error)}`);
+      this.errorMessage.set(`Der Eintrag konnte nicht gespeichert werden: ${errorMessage(error)}`);
       return;
     } finally {
       this.saving.set(false);

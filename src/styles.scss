@@ -69,9 +69,10 @@ body {
   padding: 0 1rem;
   @include mixins.Brackpoints('small') {
     justify-content: center;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     padding: 0;
+    gap: 5px;
   }
 }
 
@@ -98,3 +99,7 @@ body {
   max-width: var.$max-width;
 }
 
+.mat-mdc-form-field:not(.mat-form-field-disabled) .mat-mdc-floating-label.mdc-floating-label {
+  cursor: inherit;
+  font-size: clamp(14px, 2vw, 16px) !important;
+}

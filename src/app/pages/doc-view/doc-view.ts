@@ -78,7 +78,7 @@ export class DocView implements OnInit {
     try {
       this.CostList.set(await this.costEntryStore.loadCostEntries());
     } catch (error) {
-      this.storageError.set(`Gespeicherte Einträge konnten nicht aus IndexedDB geladen werden: ${errorMessage(error)}`);
+      this.storageError.set(`Gespeicherte Einträge konnten nicht geladen werden: ${errorMessage(error)}`);
     } finally {
       this.loadingEntries.set(false);
     }
@@ -91,7 +91,7 @@ export class DocView implements OnInit {
       this.storageError.set('');
       return true;
     } catch (error) {
-      this.storageError.set(`Änderungen konnten nicht in IndexedDB gespeichert werden: ${errorMessage(error)}`);
+      this.storageError.set(`Änderungen konnten nicht gespeichert werden: ${errorMessage(error)}`);
       return false;
     }
   }

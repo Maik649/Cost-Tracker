@@ -1,6 +1,5 @@
 import { form, FormField, email, minLength, maxLength, required } from '@angular/forms/signals';
 import { Component, inject, signal } from '@angular/core';
-import { env } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import {MatInputModule} from '@angular/material/input';
@@ -22,7 +21,7 @@ import { AuthService } from '../../services/auth.service';
 export class Login {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
-  ifLogin = signal(false);
+  isRegistering = signal(false);
   message = signal('');
   messageType = signal<'error' | 'success' | ''>('');
   submitted = signal(false);
@@ -30,48 +29,89 @@ export class Login {
   loginModel = signal({
     email: '',
     password:'',
+    confirmPassword: '',
   });
 
-  async onSubmit(event: SubmitEvent) {
+  async onSubmit(event: SubmitEvent): Promise<void> {
     event.preventDefault();
     this.submitted.set(true);
     this.message.set('');
     this.messageType.set('');
 
     if (this.inForm().invalid()) {
-      this.messageType.set('error');
       return;
     }
 
     const credentials = this.loginModel();
-    const emailAddress = credentials.email.trim();
-    const validCredentials = env.validCredentials;
-
-    if (
-      emailAddress !== validCredentials.email ||
-      credentials.password !== validCredentials.password
-    ) {
-      this.message.set('E-Mail passt nicht zum Passwort.');
+    if (this.isRegistering() && credentials.password !== credentials.confirmPassword) {
+      this.message.set(credentials.confirmPassword
+        ? 'Die Passwörter stimmen nicht überein.'
+        : 'Bitte wiederhole dein Passwort.');
       this.messageType.set('error');
       return;
     }
 
     this.loading.set(true);
-    this.message.set('Login erfolgreich.');
-    this.messageType.set('success');
-    this.auth.login();
-
-    await new Promise<void>((resolve) => setTimeout(resolve, 700));
-    const navigated = await this.router.navigateByUrl('/dashboard');
-    if (!navigated) {
+    try {
+      if (this.isRegistering()) {
+        await this.auth.signUp(credentials.email, credentials.password);
+      } else {
+        await this.auth.signIn(credentials.email, credentials.password);
+      }
+      await this.navigateToDashboard();
+    } catch (error) {
+      this.showAuthError(error);
+    } finally {
       this.loading.set(false);
-      this.ifLogin.set(true);
     }
   }
 
   async continueAsGuest(): Promise<void> {
-    this.auth.login();
-    await this.router.navigateByUrl('/dashboard');
+    this.message.set('');
+    this.messageType.set('');
+    this.loading.set(true);
+    try {
+      await this.auth.signInAsGuest();
+      await this.navigateToDashboard();
+    } catch (error) {
+      this.showAuthError(error);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  startRegistration(event?: Event): void {
+    event?.preventDefault();
+    if (this.loading()) {
+      return;
+    }
+
+    this.isRegistering.set(true);
+    this.message.set('');
+    this.messageType.set('');
+    this.submitted.set(false);
+    this.loginModel.update(model => ({ ...model, confirmPassword: '' }));
+  }
+
+  cancelRegistration(): void {
+    this.isRegistering.set(false);
+    this.message.set('');
+    this.messageType.set('');
+    this.submitted.set(false);
+    this.loginModel.update(model => ({ ...model, confirmPassword: '' }));
+  }
+
+  private async navigateToDashboard(): Promise<void> {
+    const navigated = await this.router.navigateByUrl('/dashboard');
+    if (!navigated) {
+      this.message.set('Anmeldung erfolgreich, aber das Dashboard konnte nicht geöffnet werden.');
+      this.messageType.set('error');
+    }
+  }
+
+  private showAuthError(error: unknown): void {
+    this.message.set(this.auth.authErrorMessage(error));
+    this.messageType.set('error');
   }
 
    inForm = form(this.loginModel, (schemaPath) => {

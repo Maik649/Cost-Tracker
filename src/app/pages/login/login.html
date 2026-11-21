@@ -1,6 +1,6 @@
 <section>
-  <h1>Login</h1>
   <form class="backround-gradient" novalidate (submit)="onSubmit($event)">
+    <h1>{{ isRegistering() ? 'Registrieren' : 'Login' }}</h1>
     @if (submitted() && inForm.email().invalid()) {
     @for (error of inForm.email().errors(); track $index) {
     <span class="invalid">{{ error.message }}</span>
@@ -8,7 +8,7 @@
     }
     <mat-form-field >
       <mat-label for="email">E-Mail:</mat-label>
-      <input type="email" id="email" [formField]="inForm.email"
+      <input type="email" id="email" autocomplete="email" [formField]="inForm.email"
         [class.invalid]="submitted() && inForm.email().invalid()" [class.valid]="submitted() && inForm.email().valid()"
         matInput>
     </mat-form-field>
@@ -20,18 +20,42 @@
 
     <mat-form-field >
       <mat-label for="password">Passwort:</mat-label>
-      <input  type="password" id="password" autocomplete="false" [formField]="inForm.password"
+      <input type="password" id="password" [attr.autocomplete]="isRegistering() ? 'new-password' : 'current-password'" [formField]="inForm.password"
         [class.invalid]="submitted() && inForm.password().invalid()"
         [class.valid]="submitted() && inForm.password().valid()" matInput>
     </mat-form-field>
 
-    @if (message()) {
-    <p [class.invalid]="messageType() === 'error'" [class.valid]="messageType() === 'success'">
-      {{ message() }}
-    </p>
+    @if (isRegistering()) {
+    <mat-form-field>
+      <mat-label for="confirmPassword">Passwort wiederholen:</mat-label>
+      <input type="password" id="confirmPassword" autocomplete="new-password" [formField]="inForm.confirmPassword"
+        [class.invalid]="submitted() && (!loginModel().confirmPassword || loginModel().password !== loginModel().confirmPassword)"
+        matInput>
+    </mat-form-field>
     }
-    <button type="submit" class=" button-gradient" [disabled]="loading()">Login</button>
-    <button type="button" class=" button-gradient" (click)="continueAsGuest()">Gast Login</button>
+<div class="form-button-content">
+
+  @if (message()) {
+  <p [class.invalid]="messageType() === 'error'" [class.valid]="messageType() === 'success'">
+    {{ message() }}
+  </p>
+  }
+  <button type="submit" class=" button-gradient" [disabled]="loading()">
+    {{ isRegistering() ? 'Konto erstellen' : 'Login' }}
+  </button>
+  @if (isRegistering()) {
+  <button type="button" class=" button-gradient" (click)="cancelRegistration()" [disabled]="loading()">Zurück zum Login</button>
+  } @else {
+  <button type="button" class=" button-gradient" (click)="continueAsGuest()" [disabled]="loading()">Gast Login</button>
+ <div class="register-footer-links">
+  <p>Noch keinen Login !</p>
+   <a href="#register" role="button" class="register-link" [attr.aria-disabled]="loading()"
+      [attr.tabindex]="loading() ? -1 : 0" (click)="startRegistration($event)"
+      (keydown.space)="startRegistration($event)">Registrieren</a>
+  </div>
+    }
+  </div>
+  
   </form>
   @if (loading()) {
   <app-loading-spinner />

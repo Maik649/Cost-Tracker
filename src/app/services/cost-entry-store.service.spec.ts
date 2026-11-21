@@ -1,11 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CostEntry } from '../models/cost-entry';
-import { CostEntryStore } from './cost-entry-store.service';
+import { CostEntry, normalizeCostEntry } from '../models/cost-entry';
+import { guestSessionStorageKey } from './auth.service';
+import { CostEntryStore, guestEntriesStorageKey } from './cost-entry-store.service';
 
 describe('CostEntryStore automatic backup', () => {
   let originalIndexedDb: PropertyDescriptor | undefined;
   let originalFilePicker: PropertyDescriptor | undefined;
   let originalLegacyData: string | null;
+  let originalGuestSession: string | null;
+  let originalGuestEntries: string | null;
 
   const entry: CostEntry = {
     id: 'entry-1',
@@ -23,6 +26,8 @@ describe('CostEntryStore automatic backup', () => {
     originalIndexedDb = Object.getOwnPropertyDescriptor(globalThis, 'indexedDB');
     originalFilePicker = Object.getOwnPropertyDescriptor(window, 'showOpenFilePicker');
     originalLegacyData = localStorage.getItem('lastCost');
+    originalGuestSession = localStorage.getItem(guestSessionStorageKey);
+    originalGuestEntries = localStorage.getItem(guestEntriesStorageKey);
   });
 
   afterEach(() => {
@@ -42,6 +47,24 @@ describe('CostEntryStore automatic backup', () => {
     } else {
       localStorage.setItem('lastCost', originalLegacyData);
     }
+    restoreLocalStorageValue(guestSessionStorageKey, originalGuestSession);
+    restoreLocalStorageValue(guestEntriesStorageKey, originalGuestEntries);
+  });
+
+  it('stores guest entries only in localStorage', async () => {
+    localStorage.setItem(guestSessionStorageKey, 'true');
+    Object.defineProperty(globalThis, 'indexedDB', {
+      configurable: true,
+      get: () => {
+        throw new Error('Guest entries must not access IndexedDB.');
+      },
+    });
+    const store = new CostEntryStore();
+
+    await store.saveCostEntries([entry]);
+
+    expect(localStorage.getItem(guestEntriesStorageKey)).toBe(JSON.stringify([entry]));
+    await expect(store.loadCostEntries()).resolves.toEqual([normalizeCostEntry(entry)]);
   });
 
   it('writes the current data to the selected file and updates it after each save', async () => {
@@ -99,6 +122,14 @@ describe('CostEntryStore automatic backup', () => {
     await vi.waitFor(() => expect(store.automaticBackupError()).toContain('Datei ist schreibgeschützt.'));
   });
 });
+
+function restoreLocalStorageValue(key: string, value: string | null): void {
+  if (value === null) {
+    localStorage.removeItem(key);
+  } else {
+    localStorage.setItem(key, value);
+  }
+}
 
 function createFakeIndexedDb(): IDBFactory {
   const stores = new Map<string, Map<string, unknown>>();

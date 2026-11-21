@@ -5,13 +5,23 @@ import {
   normalizeCostEntry,
   parseStoredCostEntries,
 } from '../models/cost-entry';
+import { getApp, getApps } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { DB_Link } from '../../environments/environment';
+import {
+  guestSessionStorageKey,
+  legacyDataMigrationStorageKey,
+  newAccountMigrationStorageKey,
+} from './auth.service';
 
-const databaseName = 'timeTracker';
+const databaseName = 'costTracker';
+const legacyDatabaseName = 'timeTracker';
 const databaseVersion = 2;
 const objectStoreName = 'costEntries';
 const backupSettingsStoreName = 'backupSettings';
 const backupFileHandleKey = 'fileHandle';
 const legacyStorageKey = 'lastCost';
+export const guestEntriesStorageKey = 'costTracker.guestEntries';
 
 interface BackupFileHandle {
   name: string;
@@ -45,6 +55,19 @@ export class CostEntryStore {
   readonly automaticBackupLastSaved = signal<string | null>(null);
 
   async loadCostEntries(): Promise<CostEntry[]> {
+    if (isGuestSession()) {
+      return parseStoredCostEntries(localStorage.getItem(guestEntriesStorageKey));
+    }
+
+    const userId = await this.getCurrentFirebaseUserId();
+    if (userId) {
+      return this.loadFirebaseCostEntries(userId);
+    }
+
+    return this.loadIndexedDbCostEntries();
+  }
+
+  private async loadIndexedDbCostEntries(): Promise<CostEntry[]> {
     const database = await this.openDatabase();
 
     return new Promise<CostEntry[]>((resolve, reject) => {
@@ -100,6 +123,18 @@ export class CostEntryStore {
   }
 
   async saveCostEntries(entries: CostEntry[]): Promise<void> {
+    if (isGuestSession()) {
+      localStorage.setItem(guestEntriesStorageKey, JSON.stringify(entries));
+      return;
+    }
+
+    const userId = await this.getCurrentFirebaseUserId();
+    if (userId) {
+      await this.saveFirebaseCostEntries(userId, entries);
+      void this.queueAutomaticBackup(entries);
+      return;
+    }
+
     const database = await this.openDatabase();
 
     await new Promise<void>((resolve, reject) => {
@@ -117,6 +152,119 @@ export class CostEntryStore {
     });
 
     void this.queueAutomaticBackup(entries);
+  }
+
+  private async loadFirebaseCostEntries(userId: string): Promise<CostEntry[]> {
+    const databaseSdk = await import('firebase/database');
+    const entriesReference = databaseSdk.ref(
+      databaseSdk.getDatabase(getApp(), DB_Link),
+      `users/${userId}/costEntries`,
+    );
+    const newAccountStorageKey = newAccountMigrationStorageKey(userId);
+    const isNewAccount = localStorage.getItem(newAccountStorageKey) === 'true';
+    const snapshot = await databaseSdk.get(entriesReference);
+    if (snapshot.exists()) {
+      const entries = parseFirebaseCostEntries(snapshot.val());
+      if (isNewAccount) {
+        localStorage.removeItem(newAccountStorageKey);
+      } else {
+        localStorage.setItem(legacyDataMigrationStorageKey, 'true');
+      }
+      return entries;
+    }
+
+    let entriesToMigrate: CostEntry[] = [];
+    if (!isNewAccount && localStorage.getItem(legacyDataMigrationStorageKey) !== 'true') {
+      const [legacyEntries, localEntries] = await Promise.all([
+        this.loadLegacyDatabaseEntries(),
+        this.loadIndexedDbCostEntries(),
+      ]);
+      entriesToMigrate = mergeCostEntries(legacyEntries, localEntries);
+    }
+
+    await databaseSdk.set(entriesReference, createFirebaseEntriesDocument(entriesToMigrate));
+    if (isNewAccount) {
+      localStorage.removeItem(newAccountStorageKey);
+    } else {
+      localStorage.setItem(legacyDataMigrationStorageKey, 'true');
+    }
+    return entriesToMigrate;
+  }
+
+  private async saveFirebaseCostEntries(userId: string, entries: CostEntry[]): Promise<void> {
+    const databaseSdk = await import('firebase/database');
+    await databaseSdk.set(
+      databaseSdk.ref(
+        databaseSdk.getDatabase(getApp(), DB_Link),
+        `users/${userId}/costEntries`,
+      ),
+      createFirebaseEntriesDocument(entries),
+    );
+  }
+
+  private async getCurrentFirebaseUserId(): Promise<string | null> {
+    if (!getApps().some(app => app.name === '[DEFAULT]')) {
+      return null;
+    }
+
+    const auth = getAuth(getApp());
+    await auth.authStateReady();
+    return auth.currentUser?.uid ?? null;
+  }
+
+  private async loadLegacyDatabaseEntries(): Promise<CostEntry[]> {
+    if (typeof indexedDB === 'undefined') {
+      return [];
+    }
+
+    if (typeof indexedDB.databases === 'function') {
+      const databases = await indexedDB.databases();
+      if (!databases.some(database => database.name === legacyDatabaseName)) {
+        return [];
+      }
+    }
+
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open(legacyDatabaseName);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(
+        request.error ?? new Error('Die bisherige IndexedDB konnte nicht geöffnet werden.'),
+      );
+      request.onblocked = () => reject(
+        new Error('Die bisherige IndexedDB ist durch einen anderen Tab blockiert.'),
+      );
+    });
+
+    if (!database.objectStoreNames.contains(objectStoreName)) {
+      database.close();
+      return [];
+    }
+
+    return new Promise<CostEntry[]>((resolve, reject) => {
+      const transaction = database.transaction(objectStoreName, 'readonly');
+      const request = transaction.objectStore(objectStoreName).getAll();
+      request.onsuccess = () => {
+        try {
+          resolve((request.result as CostEntry[]).map(normalizeCostEntry));
+        } catch (error) {
+          reject(error);
+        } finally {
+          database.close();
+        }
+      };
+      request.onerror = () => {
+        database.close();
+        reject(request.error ?? new Error('Die bisherigen Einträge konnten nicht gelesen werden.'));
+      };
+      transaction.onerror = () => {
+        database.close();
+        reject(transaction.error ?? new Error('Die bisherige IndexedDB konnte nicht gelesen werden.'));
+      };
+      transaction.onabort = () => {
+        database.close();
+        reject(transaction.error ?? new Error('Das Lesen der bisherigen IndexedDB wurde abgebrochen.'));
+      };
+    });
   }
 
   async loadAutomaticBackupSettings(): Promise<void> {
@@ -300,6 +448,82 @@ export class CostEntryStore {
     this.automaticBackupQueue = queuedBackup;
     return queuedBackup;
   }
+}
+
+function isGuestSession(): boolean {
+  return typeof localStorage !== 'undefined'
+    && localStorage.getItem(guestSessionStorageKey) === 'true';
+}
+
+function createFirebaseEntriesDocument(entries: CostEntry[]): {
+  schemaVersion: number;
+  entries: CostEntry[];
+} {
+  return {
+    schemaVersion: 1,
+    entries: parseStoredCostEntries(JSON.stringify(entries)),
+  };
+}
+
+function mergeCostEntries(legacyEntries: CostEntry[], currentEntries: CostEntry[]): CostEntry[] {
+  const entriesById = new Map(legacyEntries.map(entry => [entry.id, entry]));
+  for (const entry of currentEntries) {
+    entriesById.set(entry.id, entry);
+  }
+  return [...entriesById.values()];
+}
+
+function parseFirebaseCostEntries(value: unknown): CostEntry[] {
+  if (!isRecord(value) || value['schemaVersion'] !== 1) {
+    throw new Error('Die gespeicherten Firebase-Einträge haben ein ungültiges Format.');
+  }
+
+  const savedEntries = toFirebaseArray(value['entries']);
+  if (savedEntries === undefined) {
+    return [];
+  }
+  return parseStoredCostEntries(JSON.stringify(savedEntries.map(normalizeFirebaseEntry)));
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function toFirebaseArray(value: unknown): unknown[] | undefined {
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (isRecord(value)) {
+    return Object.values(value);
+  }
+
+  throw new Error('Die gespeicherten Firebase-Einträge sind keine gültige Liste.');
+}
+
+function normalizeFirebaseEntry(value: unknown): unknown {
+  if (!isRecord(value)) {
+    return value;
+  }
+
+  const entry = { ...value };
+  const recurrencePeriods = toFirebaseArray(entry['recurrencePeriods']);
+  if (recurrencePeriods) {
+    entry['recurrencePeriods'] = recurrencePeriods.map(period =>
+      isRecord(period) && period['endMonth'] === undefined
+        ? { ...period, endMonth: null }
+        : period,
+    );
+  }
+
+  const amountPeriods = toFirebaseArray(entry['amountPeriods']);
+  if (amountPeriods) {
+    entry['amountPeriods'] = amountPeriods;
+  }
+
+  return entry;
 }
 
 function isBackupFileHandle(value: unknown): value is BackupFileHandle {

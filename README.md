@@ -1,6 +1,6 @@
 # Cost Tracker
 
-Kleine Angular-Web-App zum Erfassen und Auswerten von monatlichen Einnahmen und Ausgaben. Alle Daten bleiben lokal im Browser (IndexedDB), es gibt kein Backend.
+Kleine Angular-Web-App zum Erfassen und Auswerten von monatlichen Einnahmen und Ausgaben. Kostendaten bleiben lokal im Browser (IndexedDB für angemeldete Nutzer, `localStorage` für Gäste); die Anmeldung erfolgt über Firebase Authentication.
 
 ## Funktionen
 
@@ -39,6 +39,32 @@ npm start
 
 Die App läuft dann unter `http://localhost:4200/`.
 
+## Firebase Authentication einrichten
+
+1. Lege in der Firebase Console eine Web-App an und kopiere deren Konfiguration.
+2. Trage `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId` und `appId` in `src/environments/environment.ts` unter `firebaseConfig` ein.
+3. Aktiviere in **Authentication → Sign-in method** die Anmeldung mit **E-Mail/Passwort**.
+4. Erstelle/aktiviere die **Realtime Database** und prüfe, dass ihre URL mit `DB_Link` in `src/environments/environment.ts` übereinstimmt.
+5. Ergänze unter **Authentication → Settings → Authorized domains** die Domain, auf der die App läuft.
+6. Veröffentliche in **Realtime Database → Rules** Regeln, die jeden Nutzer auf seine eigene UID beschränken:
+
+   ```json
+   {
+     "rules": {
+       "users": {
+         "$uid": {
+           ".read": "auth != null && auth.uid === $uid",
+           ".write": "auth != null && auth.uid === $uid"
+         }
+       }
+     }
+   }
+   ```
+
+7. Starte die App mit `npm start`. Nutzer können sich über **Registrieren** anlegen und danach mit E-Mail-Adresse und Passwort anmelden.
+
+Registrierte Nutzer lesen und speichern ihre Einträge unter `users/{uid}/costEntries` in der Realtime Database. Ein neu registriertes Konto startet leer und erhält keine Einträge aus einem anderen Nutzerkonto. Vorhandene Einträge aus den IndexedDB-Datenbanken `costTracker` und der früheren `timeTracker` werden höchstens einmal pro Browser zu einem bereits bestehenden Firebase-Konto kopiert, falls dort noch keine Einträge liegen; die lokale Kopie bleibt erhalten. Der Gast-Login benötigt keine Firebase-Anmeldung. Gaststatus und Gast-Kosten werden ausschließlich im `localStorage` dieses Browsers gespeichert. Die Firebase-Web-Konfiguration ist für die Verwendung im Browser bestimmt; die Datenbankregeln schützen die Kostendaten.
+
 ## Befehle
 
 | Befehl | Zweck |
@@ -61,7 +87,3 @@ Der automatische Dateizugriff benötigt einen kompatiblen Browser mit File Syste
 2. **Import:** *Settings* → „Backup importieren“ und die JSON-Datei auswählen. Die Datei wird geprüft, danach werden die aktuellen Einträge nach Bestätigung **ersetzt**.
 
 Da die Einträge nur im Browser liegen, gehen sie beim Löschen der Browserdaten verloren. Das automatische Backup schützt davor, solange der Browser weiterhin Zugriff auf die ausgewählte Datei hat. Export und Import stehen weiterhin als manuelle Alternative bereit.
-
-## Hinweis
-
-Der Login ist nur eine einfache Eingabeprüfung im Frontend und keine echte Absicherung der Daten.
