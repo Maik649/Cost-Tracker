@@ -42,7 +42,33 @@ describe('EditEntryDialog recurrence interval', () => {
     dialog.save();
 
     expect(close).toHaveBeenCalledWith(expect.objectContaining({
+      isRecurring: true,
       recurrenceInterval: 'quarterly',
+    }));
+  });
+
+  it('lets a one-time entry become recurring', () => {
+    const entry: CostEntry = {
+      id: 'internet',
+      type: 'expense',
+      amount: 40,
+      description: 'Internet',
+      category: 'Wohnen',
+      month: '2026-01',
+      isRecurring: false,
+      isActive: true,
+      endedAtMonth: null,
+    };
+    const { dialog, close } = createDialog(entry);
+
+    dialog.isRecurring = true;
+    dialog.recurrenceInterval = 'monthly';
+    dialog.save();
+
+    expect(close).toHaveBeenCalledWith(expect.objectContaining({
+      isRecurring: true,
+      recurrenceInterval: 'monthly',
+      effectiveMonth: '2026-10',
     }));
   });
 });

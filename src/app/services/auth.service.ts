@@ -24,6 +24,14 @@ export class AuthService {
   private readonly guestMode = signal(readGuestMode());
   readonly isGuest = computed(() => this.guestMode() && this.currentUser() === null);
   readonly isAuthenticated = computed(() => this.isGuest() || this.currentUser() !== null);
+  readonly headerUserLabel = computed(() => {
+    if (this.isGuest()) {
+      return 'Gast';
+    }
+
+    const email = this.currentUser()?.email;
+    return email ? initialsFromEmail(email) : 'Nutzer';
+  });
 
   private readonly auth: Auth | null;
   private readonly authStateReady: Promise<void>;
@@ -148,6 +156,22 @@ export class AuthService {
 function readGuestMode(): boolean {
   return typeof localStorage !== 'undefined'
     && localStorage.getItem(guestSessionStorageKey) === 'true';
+}
+
+function initialsFromEmail(email: string): string {
+  const localPart = email.split('@')[0] ?? '';
+  const nameParts = localPart.split(/[._+-]+/).filter(Boolean);
+  if (nameParts.length > 1) {
+    return nameParts.slice(0, 2)
+      .map(part => Array.from(part)[0] ?? '')
+      .join('')
+      .toLocaleUpperCase('de-DE');
+  }
+
+  return Array.from(nameParts[0] ?? '')
+    .slice(0, 2)
+    .join('')
+    .toLocaleUpperCase('de-DE') || '?';
 }
 
 function isFirebaseConfigured(): boolean {

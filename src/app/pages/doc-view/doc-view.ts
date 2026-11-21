@@ -7,6 +7,8 @@ import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner
 import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostType } from '../../models/cost-entry';
 import { MatDialog } from '@angular/material/dialog';
+
+import { MatIconModule } from '@angular/material/icon';
 import {
   EditEntryDialog,
   type EditEntryDialogData,
@@ -22,6 +24,7 @@ import {
   setAmountFromMonth,
 } from '../../models/cost-entry';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
+import { MatIcon } from '@angular/material/icon';
 registerLocaleData(localeDe);
 
 const monthsOfYear = [
@@ -53,7 +56,7 @@ function entryLabel(entry: CostEntry): string {
   selector: 'app-doc-view',
   templateUrl: './doc-view.html',
   styleUrls: ['./doc-view.scss'],
-  imports: [ButtonComponents, CurrencyPipe, DatePipe, FormsModule, SubHeader, LoadingSpinner],
+  imports: [ButtonComponents, CurrencyPipe, DatePipe, FormsModule, SubHeader, LoadingSpinner, MatIcon],
 })
 
 export class DocView implements OnInit {
@@ -212,16 +215,26 @@ export class DocView implements OnInit {
       return;
     }
 
+    const newRecurrencePeriods = !existingEntry.isRecurring && changes.isRecurring
+      ? changes.effectiveMonth === existingEntry.month
+        ? [{ startMonth: existingEntry.month, endMonth: null }]
+        : [
+            { startMonth: existingEntry.month, endMonth: followingMonthKey(existingEntry.month) },
+            { startMonth: changes.effectiveMonth, endMonth: null },
+          ]
+      : undefined;
     const updatedEntry: CostEntry = {
       ...existingEntry,
       type: changes.type,
       amount: changes.amount,
       description: changes.description.trim(),
       category: changes.category.trim(),
-      ...(existingEntry.isRecurring
+      isRecurring: changes.isRecurring,
+      ...(changes.isRecurring
         ? { recurrenceInterval: changes.recurrenceInterval }
         : {}),
-      ...(existingEntry.isRecurring
+      ...(newRecurrencePeriods ? { recurrencePeriods: newRecurrencePeriods } : {}),
+      ...(changes.isRecurring
         ? {
             amountPeriods: setAmountFromMonth(
               existingEntry,

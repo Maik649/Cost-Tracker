@@ -5,8 +5,25 @@
   align-items: center;
   cursor: pointer;
   gap: 0.5rem;
-
   h2 {
     font-size: clamp(1rem, 2.5vw, 1.5rem);
+  }
+}
+
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background-color: #bbbbbb;
+  color: black;
+  font-size: 1rem;
+  font-weight: 700;
+
+  @include mixins.Brackpoints('small') {
+    
   }
 }

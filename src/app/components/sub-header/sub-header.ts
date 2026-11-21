@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from '../../services/auth.service';
 @Component({
   imports: [CommonModule, RouterModule, MatIconModule],
   selector: 'app-sub-header',
@@ -9,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './sub-header.html',
 })
 export class SubHeader {
+  protected readonly auth = inject(AuthService);
   @Input() title = '';
   @Input() subHeaderPath = '';
   @Input() iconName = '';

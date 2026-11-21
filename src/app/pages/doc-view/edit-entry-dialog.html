@@ -26,7 +26,14 @@
       >
     </div>
 
-    @if (data.entry.isRecurring) {
+    @if (!data.entry.isRecurring) {
+      <label class="recurring-option" for="isRecurring">
+        <input id="isRecurring" name="isRecurring" type="checkbox" [(ngModel)]="isRecurring">
+        Eintrag wiederholen
+      </label>
+    }
+
+    @if (isRecurring) {
       <div class="edit-field">
         <label for="recurrenceInterval">Wiederholung</label>
         <div class="select-icon">
@@ -44,7 +51,9 @@
       </div>
 
       <div class="edit-field">
-        <label for="effectiveMonth">Neuer Betrag gilt ab</label>
+        <label for="effectiveMonth">
+          {{ data.entry.isRecurring ? 'Neuer Betrag gilt ab' : 'Wiederholung beginnt ab' }}
+        </label>
         <input
           id="effectiveMonth"
           name="effectiveMonth"
@@ -89,6 +98,10 @@
     @if (data.entry.isRecurring) {
       <p class="edit-note">
         Das Wiederholungsintervall gilt für alle aktiven Abschnitte. Der bisherige Betrag bleibt vor dem gewählten Wirksamkeitsmonat erhalten.
+      </p>
+    } @else if (isRecurring) {
+      <p class="edit-note">
+        Der bisherige einzelne Eintrag bleibt erhalten. Die Wiederholung beginnt ab dem gewählten Monat.
       </p>
     }
   </mat-dialog-content>

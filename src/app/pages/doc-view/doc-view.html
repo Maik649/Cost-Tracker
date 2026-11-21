@@ -57,11 +57,27 @@
     </div>
 
     <div class="month-picker sort-picker">
+      <mat-icon>search</mat-icon>
       <label for="searchTerm">Suchen</label>
       <input id="searchTerm" class="search-input" name="searchTerm" type="search"
         placeholder="Beschreibung oder Kategorie" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
-    </div>
-
+  </div>
+   @if (searchActive() && monthlyEntries().length > 0) {
+      <div class="entry-total">
+        @if (searchExpense() > 0) {
+        <p>
+          <span>Ausgaben „{{ searchTerm().trim() }}“ ({{ monthlyEntries().length }} Einträge)</span>
+          <span class="amount">{{ searchExpense() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
+        </p>
+        }
+        @if (searchIncome() > 0) {
+        <p>
+          <span>Einnahmen „{{ searchTerm().trim() }}“</span>
+          <span class="amount">{{ searchIncome() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
+        </p>
+        }
+      </div>
+      }
     <section class="entries-section" aria-labelledby="entries-heading">
       <h2 id="entries-heading" class="entries-heading">Einträge für {{ selectedMonth() }}</h2>
       <ul class="entry-grid">
@@ -109,22 +125,7 @@
         }
       </ul>
 
-      @if (searchActive() && monthlyEntries().length > 0) {
-      <div class="entry-total">
-        @if (searchExpense() > 0) {
-        <p>
-          <span>Ausgaben „{{ searchTerm().trim() }}“ ({{ monthlyEntries().length }} Einträge)</span>
-          <span class="amount">{{ searchExpense() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
-        </p>
-        }
-        @if (searchIncome() > 0) {
-        <p>
-          <span>Einnahmen „{{ searchTerm().trim() }}“</span>
-          <span class="amount">{{ searchIncome() | currency:'EUR':'symbol':'1.2-2':'de-DE' }}</span>
-        </p>
-        }
-      </div>
-      }
+     
     </section>
 
     @if (inactiveRecurringEntries().length > 0) {

@@ -24,6 +24,7 @@ export interface EditEntryResult {
   amount: number;
   description: string;
   category: string;
+  isRecurring: boolean;
   effectiveMonth: string;
   recurrenceInterval: RecurrenceInterval;
 }
@@ -44,6 +45,7 @@ export class EditEntryDialog {
   amount: number | null = this.data.entry.amount;
   description = this.data.entry.description;
   category = this.data.entry.category;
+  isRecurring = this.data.entry.isRecurring;
   recurrenceInterval = getRecurrenceInterval(this.data.entry);
 
   effectiveMonth =
@@ -66,7 +68,7 @@ export class EditEntryDialog {
     }
 
     if (
-      this.data.entry.isRecurring &&
+      this.isRecurring &&
       !/^\d{4}-(0[1-9]|1[0-2])$/.test(this.effectiveMonth)
     ) {
       this.error = 'Bitte wähle einen gültigen Wirksamkeitsmonat aus.';
@@ -74,7 +76,7 @@ export class EditEntryDialog {
     }
 
     if (
-      this.data.entry.isRecurring &&
+      this.isRecurring &&
       this.effectiveMonth < this.data.entry.month
     ) {
       this.error = 'Der Wirksamkeitsmonat darf nicht vor dem Start liegen.';
@@ -91,6 +93,7 @@ export class EditEntryDialog {
       amount: this.amount,
       description: this.description,
       category: this.category,
+      isRecurring: this.isRecurring,
       effectiveMonth: this.effectiveMonth,
       recurrenceInterval: this.recurrenceInterval,
     });
