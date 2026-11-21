@@ -49,9 +49,8 @@
     font-size: clamp(0.85rem, 2.5vw, 1rem);
     width: 100%;
   }
-  mat-icon{
-    
-  }
+
+  mat-icon {}
 }
 
 .summary-cards {
@@ -127,7 +126,7 @@
   @include mixins.scrollbars();
   display: grid;
   overflow-y: auto;
-  
+
   gap: 0.75rem;
   margin: 0;
   padding: 0 0.75rem 0 0;
@@ -177,17 +176,23 @@
   display: grid;
   gap: 0.25rem;
   margin-top: 0.75rem;
-  padding: 0.9rem 1rem;
   border: 2px solid #aeb8c6;
   border-radius: 0.65rem;
   background: #f4f6f9;
+  padding: 0 1rem;
   font-weight: 700;
+  align-items: center;
+  min-height: 40px;
 
   p {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
     margin: 0;
+
+    @include mixins.Brackpoints('small') {
+      flex-direction: column;
+    }
   }
 }
 
@@ -195,6 +200,7 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+  color: #ff3845;
 }
 
 .type-badge {
