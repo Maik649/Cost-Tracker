@@ -8,7 +8,6 @@ import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostType } from '../../models/cost-entry';
 import { MatDialog } from '@angular/material/dialog';
 
-import { MatIconModule } from '@angular/material/icon';
 import {
   EditEntryDialog,
   type EditEntryDialogData,

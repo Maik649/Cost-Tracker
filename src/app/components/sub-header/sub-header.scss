@@ -5,6 +5,7 @@
   align-items: center;
   cursor: pointer;
   gap: 0.5rem;
+
   h2 {
     font-size: clamp(1rem, 2.5vw, 1.5rem);
   }
@@ -14,16 +15,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2rem;
-  min-height: 2rem;
+  min-width: 3rem;
+  min-height: 3rem;
   padding: 0 0.4rem;
   border-radius: 999px;
-  background-color: #bbbbbb;
+  background: linear-gradient(to bottom left, #00dfe9, rgb(75, 78, 252));
   color: black;
   font-size: 1rem;
   font-weight: 700;
 
-  @include mixins.Brackpoints('small') {
-    
-  }
+  @include mixins.Brackpoints('small') {}
 }

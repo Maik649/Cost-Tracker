@@ -1,15 +1,19 @@
 import { form, FormField, email, minLength, maxLength, required } from '@angular/forms/signals';
 import { Component, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink} from '@angular/router';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatIconModule} from '@angular/material/icon';
+
+
 
 
 @Component({
-  imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule],
+  imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule, MatCheckboxModule, RouterLink, MatIconModule],
   standalone: true,
   selector: 'app-login',
   styleUrls: ['./login.scss'],
@@ -22,6 +26,7 @@ export class Login {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   isRegistering = signal(false);
+  isPrivacy= signal(false);
   message = signal('');
   messageType = signal<'error' | 'success' | ''>('');
   submitted = signal(false);
@@ -47,6 +52,12 @@ export class Login {
       this.message.set(credentials.confirmPassword
         ? 'Die Passwörter stimmen nicht überein.'
         : 'Bitte wiederhole dein Passwort.');
+      this.messageType.set('error');
+      return;
+    }
+
+    if (this.isRegistering() && !this.isPrivacy()) {
+      this.message.set('Bitte akzeptiere die Datenschutzbestimmungen.');
       this.messageType.set('error');
       return;
     }
@@ -90,6 +101,7 @@ export class Login {
     this.message.set('');
     this.messageType.set('');
     this.submitted.set(false);
+    this.isPrivacy.set(false);
     this.loginModel.update(model => ({ ...model, confirmPassword: '' }));
   }
 
@@ -98,6 +110,7 @@ export class Login {
     this.message.set('');
     this.messageType.set('');
     this.submitted.set(false);
+    this.isPrivacy.set(false);
     this.loginModel.update(model => ({ ...model, confirmPassword: '' }));
   }
 

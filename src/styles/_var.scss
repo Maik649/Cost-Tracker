@@ -1,6 +1,6 @@
   @use './_mixings.scss' as mixins;
 
-  $primary-color: #007bff;
+  $primary-color: #5ea5c2;
   $secondary-color: #d4d4d4;
   $success-color: #28a745;
   $danger-color: #dc3545;
@@ -15,7 +15,8 @@
   $max-width: 1440px;
 
   .backround-gradient {
-    background-image: linear-gradient(to bottom, rgb(184, 182, 182), rgb(221, 221, 221));
+    
+    background-image: linear-gradient(to bottom, #5baffa, rgb(221, 221, 221));
     transition: background-image 0.3s ease-in-out;
 
   }
@@ -25,7 +26,7 @@
     -webkit-transition: background 1s;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom left, rgb(129, 203, 221), rgb(52, 53, 119));
+    background: linear-gradient(to bottom left, #00dfe9, rgb(75, 78, 252));
     border: none;
     padding: 1rem 0.5rem;
     border-radius: 0.25rem;
@@ -53,7 +54,7 @@
   }
 
   .button-gradient:hover {
-    background: linear-gradient(to bottom left, rgb(72, 73, 139), rgb(149, 223, 241));
+    background: linear-gradient(to bottom left, rgb(75, 78, 252), #00dfe9);
     cursor: pointer;
     transition: background 0.8s ease-in-out;
 

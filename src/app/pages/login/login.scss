@@ -1,5 +1,5 @@
 @use '../../../styles/var' as var;
-@use '../../../styles/mixings' as mixing;
+@use '../../../styles/mixings' as mixings;
 
 section {
   display: flex;
@@ -8,45 +8,46 @@ section {
   justify-content: center;
   max-height: 100vh;
   height: 100vh;
+  background-color: #f2faff;
 }
 
 form {
+  @include mixings.fadeInLeft(0.8s);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  width: 500px;
+  gap: 2.5rem;
+  width: 410px;
   margin: 0 auto;
-  background-color: var.$secondary-color;
+  background-color: #00c9ff;
   padding: 2rem;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+
 
   >h1 {
     width: 100&;
     text-align: center;
+    color: white;
   }
 
   .form-button-content {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     max-width: 100%;
     gap: 1rem;
+    justify-content: center;
 
     >.button-gradient {
-      width: 80%;
+      width: 60%;
     }
   }
 
-  @include mixing.Brackpoints('small') {
+  @include mixings.Brackpoints('small') {
     width: calc(100% - 5rem);
     padding: 1rem;
   }
-}
-
-.mat-mdc-form-field-infix {
-  font-size: clamp(0.5rem, 2vw, 1rem) !important;
-
 }
 
 
@@ -65,7 +66,6 @@ form {
 }
 
 .register-footer-links {
-
   width: 100%;
   text-align: center;
   font-family: "Golos Text";
@@ -78,7 +78,7 @@ form {
   }
 
   .register-link {
-    color: black;
+    color: white;
     font-size: clamp(1rem, 5vw, 20px);
     text-decoration: none;
 
@@ -86,4 +86,44 @@ form {
       text-decoration: underline;
     }
   }
+}
+
+.privacy-policy-link:hover {
+  text-decoration: underline;
+}
+
+.back-link-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+
+  p {
+    color: white;
+
+
+  }
+
+  &>a {
+    align-items: center;
+    display: flex;
+    gap: 5px;
+    text-decoration: none;
+    max-width: min-content;
+     color: white;
+
+    &:hover {
+
+      text-decoration: underline;
+    }
+
+  }
+
+  .logo-image {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.float-left {
+  justify-content: flex-start;
 }

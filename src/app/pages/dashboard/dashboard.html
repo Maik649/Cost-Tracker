@@ -30,12 +30,40 @@
       </nav>
     </div>
     </mat-toolbar>
-    <section class="dashboard-section background-gradient">
+    <section class="dashboard-section">
+       
       <div class="dashboard-buttons">
         <app-button-components *ngFor="let button of buttons" class="button-gradient" [routerLink]="button.routerLink"
           [label]="button.label">
         </app-button-components>
       </div>
+      <div class="dashboard-cost-content">
+        <h2 id="upcoming-payments-title">Nächste Zahlungen</h2>
+        <!-- <p class="upcoming-payments-note">Die Planung ist monatsgenau.</p> -->
+        @if (loadingUpcomingPayments()) {
+          <p>Ausgaben werden geladen …</p>
+        } @else if (upcomingPaymentsError()) {
+          <p class="upcoming-payments-error" role="alert">{{ upcomingPaymentsError() }}</p>
+        } @else if (upcomingPayments().length === 0) {
+          <p>Keine anstehenden Zahlungen gefunden.</p>
+        } @else {
+          <ul class="upcoming-payment-list" aria-labelledby="upcoming-payments-title">
+            @for (payment of upcomingPayments(); track payment.id) {
+              <li class="upcoming-payment">
+                <div class="upcoming-payment-details">
+                  <strong>{{ payment.title }}</strong>
+                  @if (payment.category && payment.category !== payment.title) {
+                    <!-- <span>{{ payment.category }}</span> -->
+                  }
+                </div>
+                <time [attr.datetime]="payment.month">{{ payment.monthLabel }}</time>
+                <strong class="upcoming-payment-amount">{{ formatAmount(payment.amount) }}</strong>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+     
     </section>
     }
   </mat-drawer-content>

@@ -48,3 +48,49 @@
   // Standard version (Firefox only for now)
   // scrollbar-color: $foreground-color $background-color;
 }
+
+
+@mixin fadeInLeft($time: 0.8s) {
+  @keyframes fadeInLeft {
+    0% {
+      opacity: 0.2;
+      transform: translateX(-150%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+  animation: fadeInLeft $time ease-in-out;
+}
+
+@mixin fadeInRight($time: 0.8s) {
+  @keyframes fadeInRight {
+    0% {
+      opacity: 0.2;
+      transform: translateX(100%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+  animation: fadeInRight $time ease-in-out;
+}
+
+@mixin fadeInBottom($time: 0.8s) {
+  @keyframes fadeInBottom {
+    0% {
+      opacity: 0.2;
+      transform: translateY(-150%);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+  animation: fadeInBottom $time ease-in-out ;
+}

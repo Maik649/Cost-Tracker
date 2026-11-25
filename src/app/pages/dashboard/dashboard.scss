@@ -7,7 +7,8 @@
 }
 
 mat-drawer {
-  background-color: var.$secondary-color;
+  background-color: #b9e6da;
+  // background-color: var.$secondary-color;
   color: white;
   border: unset;
   border-radius: 0;
@@ -16,9 +17,11 @@ mat-drawer {
 
 .logo-image {
   width: 85px;
+  @include mixins.fadeInLeft($time: 0.8s);
+
   @include mixins.Brackpoints('small') {
     width: 65px;
-   }
+  }
 
 }
 
@@ -39,12 +42,13 @@ mat-drawer {
   align-items: center;
   gap: 0.5rem;
   padding: 1rem;
-  
+  @include mixins.fadeInRight($time: 0.8s);
+
   @include mixins.Brackpoints('small') {
-    
+
     padding: 0;
-       
-      }
+
+  }
 }
 
 .user-badge {
@@ -55,15 +59,15 @@ mat-drawer {
   // min-height: 4rem;
   padding: 1rem 1rem;
   border-radius: 999px;
-  background: linear-gradient(to bottom left, rgb(129, 203, 221), rgb(52, 53, 119));
+  background: linear-gradient(to bottom left, #00dfe9, rgb(75, 78, 252));
   color: #fff;
   font-size: 1rem;
   font-weight: 700;
 
-   @include mixins.Brackpoints('small') {
-       padding: 0.75rem 0.5rem;
-    
-   }
+  @include mixins.Brackpoints('small') {
+    padding: 0.75rem 0.5rem;
+
+  }
 
 }
 
@@ -72,20 +76,22 @@ mat-toolbar {
   align-items: center;
   justify-content: center;
   padding: 4rem 1rem;
-  background-image: linear-gradient(to bottom right, #ffffff, #d8dee8);
+  background-color: #00c9ff;
   color: white;
   font-family: var.$font-family;
-  
+
   @include mixins.Brackpoints('small') {
     font-size: 1.25rem;
-      }
-      
-      & .dashboard-nav-title {
-        margin: 0;
-        font-weight: bold;
-        color: var.$dark-color;
-        font-size: 2.5rem;
-        
+  }
+
+  & .dashboard-nav-title {
+    @include mixins.fadeInLeft(0.5s);
+
+    margin: 0;
+    font-weight: bold;
+    color: var.$dark-color;
+    font-size: 2.5rem;
+
     @include mixins.Brackpoints('small') {
 
       display: none;
@@ -95,7 +101,7 @@ mat-toolbar {
     & .button-gradient {
       padding: 0.5rem 1rem;
 
-      
+
       &:hover {
         color: var.$light-color;
       }
@@ -111,16 +117,13 @@ mat-toolbar {
 .dashboard-section {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: calc(100vh - 130px);
-
-  // &.background-image {
-  //  background-image: linear-gradient(to bottom right, #ffffff, #d8dee8);
-  // }
-
-  @include mixins.Brackpoints('small') {
-    height: calc(100vh - 130px);
-  }
+  flex-direction: column;
+  justify-content: start;
+  height: auto;
+  min-height: calc(100vh - 130px);
+  gap: 3rem;
+  box-sizing: border-box;
+  padding: 2rem 0;
 }
 
 .dashboard-buttons {
@@ -128,9 +131,11 @@ mat-toolbar {
   gap: 1rem;
   color: #ffffff;
   padding: 0 1rem;
+  @include mixins.fadeInBottom($time: 0.8s);
+
 
   & .button-gradient {
-    padding: 4rem 3rem;
+    padding: 1rem 3rem;
     text-decoration: unset;
     font-size: 1.25rem;
     color: #ffffff;
@@ -153,6 +158,55 @@ mat-toolbar {
 
     }
   }
+}
+
+.dashboard-cost-content {
+  width: min(900px, calc(100% - 2rem));
+  box-sizing: border-box;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: #f9fdfc;
+  color: #241f1f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  @include mixins.fadeInLeft(0.5s);
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.upcoming-payments-note {
+  margin: 0.35rem 0 1rem;
+  color: #555;
+}
+
+.upcoming-payments-error {
+  color: var.$danger-color;
+}
+
+.upcoming-payment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.upcoming-payment {
+  display: flex;
+  display: grid;
+  grid-template-columns: 1.75fr 1fr 0.5fr;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid rgba(36, 31, 31, 0.15);
+}
+
+.upcoming-payment-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.upcoming-payment-amount {
+  white-space: nowrap;
 }
 
 mat-footer {

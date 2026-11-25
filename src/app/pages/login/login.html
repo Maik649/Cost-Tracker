@@ -1,12 +1,26 @@
 <section>
-  <form class="backround-gradient" novalidate (submit)="onSubmit($event)">
+  <form class="" novalidate (submit)="onSubmit($event)">
+    @if(isRegistering()){
+    <div class="back-link-content float-left">
+      <a (click)="cancelRegistration()" routerLink="/"><mat-icon>arrow_back</mat-icon>Zurück</a>
+      <!-- <img class="logo-image" src="../assets/CT-logo-new.webp" alt="Cost Tracker Logo"> -->
+    </div>
+    }@else{
+    <div class="back-link-content">
+      <p>Noch keinen Login!</p>
+      <!-- <img class="logo-image" src="../assets/CT-logo-new.webp" alt="Cost Tracker Logo"> -->
+      <a href="#register" role="button" class="register-link" [attr.aria-disabled]="loading()"
+        [attr.tabindex]="loading() ? -1 : 0" (click)="startRegistration($event)"
+        (keydown.space)="startRegistration($event)">Registrieren</a>
+    </div>
+    }
     <h1>{{ isRegistering() ? 'Registrieren' : 'Login' }}</h1>
     @if (submitted() && inForm.email().invalid()) {
     @for (error of inForm.email().errors(); track $index) {
     <span class="invalid">{{ error.message }}</span>
     }
     }
-    <mat-form-field >
+    <mat-form-field>
       <mat-label for="email">E-Mail:</mat-label>
       <input type="email" id="email" autocomplete="email" [formField]="inForm.email"
         [class.invalid]="submitted() && inForm.email().invalid()" [class.valid]="submitted() && inForm.email().valid()"
@@ -18,10 +32,10 @@
     }
     }
 
-    <mat-form-field >
+    <mat-form-field>
       <mat-label for="password">Passwort:</mat-label>
-      <input type="password" id="password" [attr.autocomplete]="isRegistering() ? 'new-password' : 'current-password'" [formField]="inForm.password"
-        [class.invalid]="submitted() && inForm.password().invalid()"
+      <input type="password" id="password" [attr.autocomplete]="isRegistering() ? 'new-password' : 'current-password'"
+        [formField]="inForm.password" [class.invalid]="submitted() && inForm.password().invalid()"
         [class.valid]="submitted() && inForm.password().valid()" matInput>
     </mat-form-field>
 
@@ -33,29 +47,37 @@
         matInput>
     </mat-form-field>
     }
-<div class="form-button-content">
-
-  @if (message()) {
-  <p [class.invalid]="messageType() === 'error'" [class.valid]="messageType() === 'success'">
-    {{ message() }}
-  </p>
-  }
-  <button type="submit" class=" button-gradient" [disabled]="loading()">
-    {{ isRegistering() ? 'Konto erstellen' : 'Login' }}
-  </button>
-  @if (isRegistering()) {
-  <button type="button" class=" button-gradient" (click)="cancelRegistration()" [disabled]="loading()">Zurück zum Login</button>
-  } @else {
-  <button type="button" class=" button-gradient" (click)="continueAsGuest()" [disabled]="loading()">Gast Login</button>
- <div class="register-footer-links">
-  <p>Noch keinen Login !</p>
-   <a href="#register" role="button" class="register-link" [attr.aria-disabled]="loading()"
-      [attr.tabindex]="loading() ? -1 : 0" (click)="startRegistration($event)"
-      (keydown.space)="startRegistration($event)">Registrieren</a>
-  </div>
+    @if (isRegistering()) {
+    <mat-checkbox class="privacy-policy-checkbox" [checked]="isPrivacy()" (change)="isPrivacy.set($event.checked)">
+      Ich akzeptiere die <a class="privacy-policy-link" routerLink="/privacy"
+        (click)="$event.stopPropagation()">Datenschutzbestimmungen</a>
+    </mat-checkbox>
     }
-  </div>
-  
+    <div class="form-button-content">
+      @if (message()) {
+      <p [class.invalid]="messageType() === 'error'" [class.valid]="messageType() === 'success'">
+        {{ message() }}
+      </p>
+      }
+      <button type="submit" class=" button-gradient" [disabled]="loading()">
+        {{ isRegistering() ? 'Konto erstellen' : 'Login' }}
+      </button>
+      @if (isRegistering()) {
+      <!-- <button type="button" class=" button-gradient" (click)="cancelRegistration()" [disabled]="loading()">Zurück zum
+        Login</button> -->
+      } @else {
+      <button type="button" class=" button-gradient" (click)="continueAsGuest()" [disabled]="loading()">Gast
+        Login</button>
+      <!-- <div class="register-footer-links">
+       
+        <a href="#register" role="button" class="register-link" [attr.aria-disabled]="loading()"
+          [attr.tabindex]="loading() ? -1 : 0" (click)="startRegistration($event)"
+          (keydown.space)="startRegistration($event)">Registrieren</a>
+      </div> -->
+      }
+
+    </div>
+
   </form>
   @if (loading()) {
   <app-loading-spinner />

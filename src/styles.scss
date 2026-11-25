@@ -51,7 +51,7 @@ body {
   left: 0;
   right: 0;
   gap: 1rem;
-  background-image: linear-gradient(to bottom right, #ffffff, #d8dee8);
+  background: linear-gradient(to bottom left, #00dfe9, rgb(75, 78, 252));
 
   @include mixins.Brackpoints('small') {
     position: fixed;
@@ -67,6 +67,7 @@ body {
   width: 100%;
   max-width: var.$max-width;
   padding: 0 1rem;
+
   @include mixins.Brackpoints('small') {
     justify-content: center;
     flex-direction: column;
@@ -87,19 +88,52 @@ body {
     padding: 8rem 0 0 0;
   }
 
-  & .content-wrapper  {
+  & .content-wrapper {
     padding: 0 1rem;
     width: calc(100vw - 2rem);
     max-width: var.$max-width;
   }
 }
 
-.content-wrapper  {
+.content-wrapper {
   width: 100%;
   max-width: var.$max-width;
 }
 
-.mat-mdc-form-field:not(.mat-form-field-disabled) .mat-mdc-floating-label.mdc-floating-label {
-  cursor: inherit;
-  font-size: clamp(14px, 2vw, 16px) !important;
+.mat-mdc-form-field {
+  width: 80%;
+  margin: 0 auto;
+  // .mat-mdc-text-field-wrapper {
+
+  //   background-color: #00dfe9;
+
+  // }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #f9fdfc !important;
+  }
+
+  .mat-mdc-input-element {
+    background-color: #f9fdfc !important;
+  }
+
+  .mat-mdc-form-field-flex {
+    background-color: #f9fdfc !important;
+    font-size: clamp(0.5rem, 2vw, 1rem) !important;
+  }
+
+  .mat-mdc-form-field-infix {
+    background-color: #f9fdfc !important;
+  }
+
+  .mat-mdc-input-element:-webkit-autofill,
+  .mat-mdc-input-element:-webkit-autofill:hover,
+  .mat-mdc-input-element:-webkit-autofill:focus,
+  .mat-mdc-input-element:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #f9fdfc inset !important;
+    box-shadow: 0 0 0 1000px #f9fdfc inset !important;
+    -webkit-text-fill-color: var.$color-text !important;
+    caret-color: var.$color-text;
+    transition: background-color 9999s ease-out 0s;
+  }
 }

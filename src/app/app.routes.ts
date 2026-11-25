@@ -4,6 +4,7 @@ import { LoadingSpinner } from './components/loading-spinner/loading-spinner';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { DocView } from './pages/doc-view/doc-view';
 import { AddCost } from './pages/add-cost/add-cost';
+import { PrivacyPolicy } from './pages/privacy-policy/privacy-policy';
 import { Settings } from './pages/settings/settings';
 import { authGuard } from './guards/auth.guard';
 import { Diagram } from './pages/diagram/diagram';
@@ -42,6 +43,10 @@ export const routes: Routes = [
     path: 'diagram',
     component: Diagram,
     canActivate: [authGuard],
+  },
+  {
+    path: 'privacy',
+    component: PrivacyPolicy,
   },
   {
     path: '**',
