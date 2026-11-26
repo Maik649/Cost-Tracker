@@ -4,7 +4,6 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponents } from '../../components/button-components/button-components';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
-import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostType } from '../../models/cost-entry';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -55,7 +54,7 @@ function entryLabel(entry: CostEntry): string {
   selector: 'app-doc-view',
   templateUrl: './doc-view.html',
   styleUrls: ['./doc-view.scss'],
-  imports: [ButtonComponents, CurrencyPipe, DatePipe, FormsModule, SubHeader, LoadingSpinner, MatIcon],
+  imports: [ButtonComponents, CurrencyPipe, DatePipe, FormsModule, LoadingSpinner, MatIcon],
 })
 
 export class DocView implements OnInit {

@@ -39,7 +39,7 @@
   input {
     min-height: 1.5rem;
     padding: 0.5rem 0.65rem;
-    border: 1px solid #aeb8c6;
+    border: 1px solid #00c9ff;
     border-radius: 0.4rem;
     font: inherit;
     font-size: clamp(0.85rem, 2.5vw, 1.25rem);
@@ -62,7 +62,7 @@
 
 .summary-card {
   padding: 0.5rem 1rem;
-  border: 1px solid #d8dee8;
+  border: 1px solid #00c9ff;
   border-radius: 0.65rem;
   background: #fff;
 
@@ -140,7 +140,7 @@
   justify-items: start;
   grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
   padding: 0.9rem 1rem;
-  border: 1px solid #d8dee8;
+  border: 1px solid #00c9ff;
   border-radius: 0.65rem;
   background: #fff;
 }
@@ -176,7 +176,7 @@
   display: grid;
   gap: 0.25rem;
   margin-top: 0.75rem;
-  border: 2px solid #aeb8c6;
+  border: 2px solid #00c9ff;
   border-radius: 0.65rem;
   background: #f4f6f9;
   padding: 0 1rem;

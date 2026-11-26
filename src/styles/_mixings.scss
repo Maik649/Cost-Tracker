@@ -25,7 +25,7 @@
 }
 
 @mixin scrollbars($size: 9px,
-  $foreground-color: #696969,
+  $foreground-color: #00c9ff,
   $background-color: #fcf9f9) {
 
   &::-webkit-scrollbar-thumb {
@@ -50,11 +50,21 @@
 }
 
 
-@mixin fadeInLeft($time: 0.8s) {
+@mixin fadeInLeft($time: 0.3s) {
   @keyframes fadeInLeft {
     0% {
-      opacity: 0.2;
+      opacity: 0.0;
       transform: translateX(-150%);
+    }
+
+    50% {
+      opacity: 0.0;
+      transform: translateX(-100%);
+    }
+
+    75% {
+      opacity: 0.0;
+      transform: translateX(-100%);
     }
 
     100% {
@@ -62,7 +72,8 @@
       transform: translateX(0%);
     }
   }
-  animation: fadeInLeft $time ease-in-out;
+
+  animation: fadeInLeft $time ease-in;
 }
 
 @mixin fadeInRight($time: 0.8s) {
@@ -77,20 +88,36 @@
       transform: translateX(0%);
     }
   }
+
   animation: fadeInRight $time ease-in-out;
 }
 
 @mixin fadeInBottom($time: 0.8s) {
   @keyframes fadeInBottom {
     0% {
-      opacity: 0.2;
+      opacity: 0.0;
       transform: translateY(-150%);
+      z-index: -1;
+    }
+
+    50% {
+      opacity: 0.0;
+      transform: translateY(-100%);
+      z-index: -1;
+    }
+
+    75% {
+      opacity: 0.0;
+      transform: translateY(-50%);
+      z-index: -1;
     }
 
     100% {
       opacity: 1;
       transform: translateY(0%);
+      z-index: 1;
     }
   }
-  animation: fadeInBottom $time ease-in-out ;
+
+  animation: fadeInBottom $time ease-in-out;
 }

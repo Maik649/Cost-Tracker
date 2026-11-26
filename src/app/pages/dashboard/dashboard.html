@@ -14,24 +14,7 @@
           
         </button> -->
     @if(auth.isAuthenticated()){
-      <mat-toolbar class="background-gradient" >
-      <div class="sub-header-content-wrapper"> 
-        <img class="logo-image" src="../assets/CT-logo-new.webp" alt="Cost Tracker Logo">
-      <span class="dashboard-nav-title">Dashboard</span>
-      <span class="spacer"></span>
-      <nav class="dashboard-nav" aria-label="Hauptnavigation">
-        <a class="button-gradient" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
-        <a class="button-gradient" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</a>
-        <span class="user-badge"
-          [attr.title]="auth.currentUser()?.email ?? 'Gast'"
-          [attr.aria-label]="auth.isGuest() ? 'Gast' : 'Angemeldet als ' + (auth.currentUser()?.email ?? '')">
-          {{ auth.headerUserLabel() }}
-        </span>
-      </nav>
-    </div>
-    </mat-toolbar>
     <section class="dashboard-section">
-       
       <div class="dashboard-buttons">
         <app-button-components *ngFor="let button of buttons" class="button-gradient" [routerLink]="button.routerLink"
           [label]="button.label">

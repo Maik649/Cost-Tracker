@@ -1,17 +1,17 @@
-.loading-spinner-overlay {
-	position: fixed;
-	inset: 0;
-	display: grid;
-	place-items: center;
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 9999;
-}
+// .loading-spinner-overlay {
+// 	position: fixed;
+// 	inset: 0;
+// 	display: grid;
+// 	place-items: center;
+// 	background-color: rgba(0, 0, 0, 0.5);
+// 	z-index: 9999;
+// }
 
 .loading-spinner {
 	display: grid;
 	min-height: 8rem;
 	place-items: center;
-	color: #2563eb;
+	color: #00c9ff;
 }
 
 .spinner {

@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SubHeader } from '../../components/sub-header/sub-header';
 import { ButtonComponents } from '../../components/button-components/button-components';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +12,7 @@ import {
 import { CostEntryStore } from '../../services/cost-entry-store.service';
 
 @Component({
-  imports: [FormsModule, SubHeader, ButtonComponents, CommonModule, MatIconModule],
+  imports: [FormsModule, ButtonComponents, CommonModule, MatIconModule],
   selector: 'app-add-cost',
   styleUrls: ['./add-cost.scss'],
   templateUrl: './add-cost.html',

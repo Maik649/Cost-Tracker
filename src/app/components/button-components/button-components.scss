@@ -19,15 +19,14 @@
   text-decoration: none;
   cursor: pointer;
   width: 100%;
-  
+
   & span {
     font-size: clamp(1rem, 1vw, 1.5rem);
     font-weight: 600;
   }
 }
 
-.button:hover {
-}
+.button:hover {}
 
 .button--primary {
   border-color: #244b8e;
@@ -41,7 +40,7 @@
 
 .button--danger {
   border-color: #9d252b;
-   color: #8f2027;
+  color: #8f2027;
 }
 
 .button--danger:hover {
@@ -50,12 +49,14 @@
 
 .button--button-gradient {
   border-color: #4891c8;
-  background: linear-gradient(to bottom left, rgb(129, 203, 221), rgb(52, 53, 119));
+  background: linear-gradient(to bottom left, #00dfe9, rgb(75, 78, 252));
+
   color: #fff;
 }
 
 .button--button-gradient:hover {
-  background: linear-gradient(to bottom left, rgb(129, 203, 221), rgb(52, 53, 119));
+  background: linear-gradient(to bottom left, rgb(75, 78, 252), #00dfe9);
+
   color: #fff;
 }
 
@@ -67,10 +68,12 @@
 }
 
 .button {
-  @include mixins.Brackpoints('small'){
+  @include mixins.Brackpoints('small') {
     width: 100%;
+
     .button--monthButton {
       max-width: 200px;
+
       span {
         text-align: center;
         display: block;

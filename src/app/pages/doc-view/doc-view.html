@@ -1,17 +1,6 @@
 <section class="page">
-  <div class="sub-header-container">
-    <div class="sub-header-content-wrapper">
-      <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-cost" iconName="add_box"></app-sub-header>
-      <app-sub-header title="Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
-    </div>
-  </div>
   <div class="content-wrapper">
-    @if (loadingEntries()) {
-    <app-loading-spinner></app-loading-spinner>
-    }
-    @if (storageError()) {
-    <p class="error-message" role="alert">{{ storageError() }}</p>
-    }
+  
 
     <div class="overview-heading">
       <div>
@@ -35,6 +24,7 @@
         }
       </div>
     </div>
+    
     <div class="overview-heading monthly-heading">
       <div>
         <h2>Monatsdetails</h2>
@@ -62,7 +52,10 @@
       <input id="searchTerm" class="search-input" name="searchTerm" type="search"
         placeholder="Beschreibung oder Kategorie" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)">
   </div>
-  <div class="entry-total">
+
+    @if (loadingEntries()) {
+      <div class="entry-total">
+        <app-loading-spinner></app-loading-spinner>
    @if (searchActive() && monthlyEntries().length > 0) {
         @if (searchExpense() > 0) {
         <p>
@@ -78,6 +71,11 @@
         }
       }
     </div>
+    }
+    @if (storageError()) {
+    <p class="error-message" role="alert">{{ storageError() }}</p>
+    }
+  
     <section class="entries-section" aria-labelledby="entries-heading">
       <h2 id="entries-heading" class="entries-heading">Einträge für {{ selectedMonth() }}</h2>
       <ul class="entry-grid">

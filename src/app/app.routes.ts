@@ -13,6 +13,7 @@ export const routes: Routes = [
   {
     path: '',
     component: Login,
+    data: {header: 'none'},
   },
   {
     path: 'loading',
@@ -22,17 +23,22 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
-    canActivate: [authGuard],
+    
+    data: {header: 'dashboard'},
+    
+    // canActivate: [authGuard],
   },
   {
     path: 'doc-view',
     component: DocView,
     canActivate: [authGuard],
+     data: { header: 'doc-view' },
   },
   {
     path: 'add-cost',
-    component: AddCost,
-    canActivate: [authGuard],
+  component: AddCost,
+  canActivate: [authGuard],
+  data: { header: 'add-cost' },
   },
   {
     path: 'settings',

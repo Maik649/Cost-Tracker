@@ -9,10 +9,41 @@ section {
   max-height: 100vh;
   height: 100vh;
   background-color: #f2faff;
+  position: relative;
+
+  .logo-image {
+    position: absolute;
+    animation: logoFadeIn 0.8s ease-in;
+    transition: all 0.8s ease-in-out;
+    width: 150px;
+    height: 150px;
+    top: 0%;
+    left: auto;
+    z-index: 1;
+  }
+}
+
+@keyframes logoFadeIn {
+  0% {
+    transform: translate(0%, 300%) scale(2.5);
+  }
+  50%{
+    
+    transform: translate(0%, 300%) scale(2.5);
+  }
+
+  75%{
+    
+    transform: translate(0%, 300%) scale(2.5);
+  }
+
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
 }
 
 form {
-  @include mixings.fadeInLeft(0.8s);
+  @include mixings.fadeInLeft(0.9s);
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
@@ -21,19 +52,29 @@ form {
   background-color: #00c9ff;
   padding: 2rem;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 9px 16px 19px rgba(0, 0, 0, 1);
   position: relative;
-
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  min-height: 575px;
+  z-index: 0;
 
   >h1 {
-    width: 100&;
+    width: 100%;
     text-align: center;
     color: white;
+    font-size: clamp(21px, 5vw, 36px);
+  }
+
+  .form-field-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .form-button-content {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     max-width: 100%;
     gap: 1rem;
@@ -96,9 +137,11 @@ form {
   display: flex;
   width: 100%;
   justify-content: space-around;
+  font-size: clamp(16px, 2vw, 18px);
 
   p {
     color: white;
+    margin: 0;
 
 
   }
@@ -109,7 +152,7 @@ form {
     gap: 5px;
     text-decoration: none;
     max-width: min-content;
-     color: white;
+    color: white;
 
     &:hover {
 

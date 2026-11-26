@@ -1,1 +1,39 @@
+@switch(header()){
+@case('dashboard'){
+<mat-toolbar class="background-gradient">
+    <div class="sub-header-content-wrapper">
+        <img class="logo-image" src="../assets/CT-logo-new.webp" alt="Cost Tracker Logo">
+        <span class="dashboard-nav-title">Dashboard</span>
+        <span class="spacer"></span>
+        <nav class="dashboard-nav" aria-label="Hauptnavigation">
+            <a class="button-gradient" routerLink="/settings"> <mat-icon>settings</mat-icon>Settings</a>
+            <a class="button-gradient" (click)="logout()"> <mat-icon>logout</mat-icon>Logout</a>
+            <span class="user-badge" [attr.title]="auth.currentUser()?.email ?? 'Gast'"
+                [attr.aria-label]="auth.isGuest() ? 'Gast' : 'Angemeldet als ' + (auth.currentUser()?.email ?? '')">
+                {{ auth.headerUserLabel() }}
+            </span>
+        </nav>
+    </div>
+</mat-toolbar>
+}
+@case('doc-view') {
+<mat-toolbar class="background-gradient">
+        <div class="sub-header-content-wrapper">
+            <app-sub-header title="Eintrag hinzufügen" subHeaderPath="/add-cost" iconName="add_box"></app-sub-header>
+            <app-sub-header title="Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+        </div>
+</mat-toolbar>
+}
+
+@case('add-cost'){
+<mat-toolbar class="background-gradient">
+        <div class="sub-header-content-wrapper">
+            <app-sub-header title="Monatsübersicht" subHeaderPath="/doc-view"
+                iconName="insert_invitation"></app-sub-header>
+            <app-sub-header title="Dashboard" subHeaderPath="/dashboard" iconName="dashboard"></app-sub-header>
+
+        </div>
+</mat-toolbar>
+}
+}
 <router-outlet />

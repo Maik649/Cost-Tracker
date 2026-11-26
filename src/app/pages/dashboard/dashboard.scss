@@ -2,8 +2,8 @@
 @use '../../../styles/_mixings.scss' as mixins;
 
 .dashboard-container {
-  height: 100vh;
-  width: 100vw;
+  height: auto;
+  min-height: calc(100vh - 96px);
 }
 
 mat-drawer {
@@ -13,105 +13,6 @@ mat-drawer {
   border: unset;
   border-radius: 0;
   width: 200px;
-}
-
-.logo-image {
-  width: 85px;
-  @include mixins.fadeInLeft($time: 0.8s);
-
-  @include mixins.Brackpoints('small') {
-    width: 65px;
-  }
-
-}
-
-.dashboard-nav-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 4rem;
-  background-color: var.$primary-color;
-  color: rgb(87, 87, 87);
-  margin: 0;
-
-
-}
-
-.dashboard-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  @include mixins.fadeInRight($time: 0.8s);
-
-  @include mixins.Brackpoints('small') {
-
-    padding: 0;
-
-  }
-}
-
-.user-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  // min-width: 4rem;
-  // min-height: 4rem;
-  padding: 1rem 1rem;
-  border-radius: 999px;
-  background: linear-gradient(to bottom left, #00dfe9, rgb(75, 78, 252));
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-
-  @include mixins.Brackpoints('small') {
-    padding: 0.75rem 0.5rem;
-
-  }
-
-}
-
-mat-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 1rem;
-  background-color: #00c9ff;
-  color: white;
-  font-family: var.$font-family;
-
-  @include mixins.Brackpoints('small') {
-    font-size: 1.25rem;
-  }
-
-  & .dashboard-nav-title {
-    @include mixins.fadeInLeft(0.5s);
-
-    margin: 0;
-    font-weight: bold;
-    color: var.$dark-color;
-    font-size: 2.5rem;
-
-    @include mixins.Brackpoints('small') {
-
-      display: none;
-
-    }
-
-    & .button-gradient {
-      padding: 0.5rem 1rem;
-
-
-      &:hover {
-        color: var.$light-color;
-      }
-    }
-  }
-
-  & a:-webkit-any-link {
-    text-decoration: none;
-    color: var.$light-color;
-  }
 }
 
 .dashboard-section {
@@ -131,8 +32,8 @@ mat-toolbar {
   gap: 1rem;
   color: #ffffff;
   padding: 0 1rem;
-  @include mixins.fadeInBottom($time: 0.8s);
-
+  @include mixins.fadeInBottom($time: 1.5s);
+  
 
   & .button-gradient {
     padding: 1rem 3rem;
@@ -167,8 +68,9 @@ mat-toolbar {
   border-radius: 0.75rem;
   background-color: #f9fdfc;
   color: #241f1f;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  @include mixins.fadeInLeft(0.5s);
+  box-shadow: 6px 6px 15px #00c8ff54;
+  transition: left 0.9s ease-in-out;
+  @include mixins.fadeInLeft(0.9s);
 
   h2 {
     margin: 0;

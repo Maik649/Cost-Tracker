@@ -77,10 +77,7 @@ export class Dashboard implements OnInit {
   readonly loadingUpcomingPayments = signal(true);
   readonly upcomingPaymentsError = signal('');
 
-  async logout(): Promise<void> {
-    this.auth.logout();
-    await this.router.navigateByUrl('/');
-  }
+  
 
   ngOnInit(): void {
     void this.loadCostEntries();
