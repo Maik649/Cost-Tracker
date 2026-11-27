@@ -70,8 +70,7 @@ body {
   padding: 0 1rem;
 
   @include mixins.Brackpoints('small') {
-    justify-content: center;
-    flex-direction: column;
+    justify-content: space-around;
     align-items: center;
     padding: 0;
     gap: 5px;
@@ -84,7 +83,9 @@ body {
   justify-content: center;
   flex-direction: column;
 
-  @include mixins.Brackpoints('small') {}
+  @include mixins.Brackpoints('small') {
+    padding: 7rem 0;
+  }
 
   & .content-wrapper {
     padding: 1rem 0rem 1rem 0rem;
@@ -190,6 +191,8 @@ body {
 
   @include mixins.Brackpoints('small') {
     font-size: 1.25rem;
+    position: fixed;
+    z-index: 2;
   }
 
   & .dashboard-nav-title {
@@ -234,6 +237,35 @@ body {
     @include mixins.Brackpoints('small') {
       padding: 0.75rem 0.5rem;
 
+    }
+
+  }
+}
+
+.back-link-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  font-size: clamp(16px, 2vw, 18px);
+
+  p {
+    color: white;
+    margin: 0;
+
+
+  }
+
+  &>a {
+    align-items: center;
+    display: flex;
+    gap: 5px;
+    text-decoration: none;
+    max-width: min-content;
+    color: white;
+
+    &:hover {
+
+      text-decoration: underline;
     }
 
   }

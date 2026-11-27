@@ -21,10 +21,13 @@ mat-drawer {
   flex-direction: column;
   justify-content: start;
   height: auto;
-  min-height: calc(100vh - 130px);
+  min-height: calc(100vh - 100px);
   gap: 3rem;
   box-sizing: border-box;
-  padding: 2rem 0;
+
+  @include mixins.Brackpoints('small') {
+    gap: 6.5rem;
+  }
 }
 
 .dashboard-buttons {
@@ -33,7 +36,10 @@ mat-drawer {
   color: #ffffff;
   padding: 0 1rem;
   @include mixins.fadeInBottom($time: 1.5s);
-  
+
+  @include mixins.Brackpoints('small') {
+    gap: 0.5rem;
+  }
 
   & .button-gradient {
     padding: 1rem 3rem;
@@ -48,11 +54,10 @@ mat-drawer {
   }
 
   @include mixins.Brackpoints('compact') {
-    flex-direction: column;
-    align-items: stretch;
+
 
     & .button-gradient {
-      padding: 3.5rem 3rem;
+      padding: 0;
       text-decoration: unset;
       font-size: 1rem;
       color: var.$light-color;
@@ -69,7 +74,7 @@ mat-drawer {
   background-color: #f9fdfc;
   color: #241f1f;
   box-shadow: 6px 6px 15px #00c8ff54;
-  transition: left 0.9s ease-in-out;
+  transition: left 0.7s ease-in-out;
   @include mixins.fadeInLeft(0.9s);
 
   h2 {

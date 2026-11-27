@@ -1,8 +1,10 @@
 @use '../../../styles/_mixings.scss' as mixins;
+@use '../../../styles/var';
+
 
 h1 {
   margin: 2rem 0 2rem;
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-size: clamp(2rem, 2.5vw, 2.5rem);
   text-align: center;
 }
 
@@ -10,7 +12,7 @@ h1 {
   display: grid;
   gap: 0.55rem;
   padding: 1.25rem;
-  border: 1px solid #d8dee8;
+  border: 1px solid var.$primary-color;
   border-radius: 0.65rem;
   background: #fff;
   max-width: 600px;
@@ -27,7 +29,7 @@ h1 {
     width: 100%;
     min-height: 2.75rem;
     padding: 0.55rem 0.7rem;
-    border: 1px solid #aeb8c6;
+    border: 1px solid var.$primary-color;
     border-radius: 0.4rem;
     background: #fff;
     font: inherit;
@@ -56,7 +58,7 @@ h1 {
   input:focus-visible,
   select:focus-visible,
   button:focus-visible {
-    outline: 3px solid #315da8;
+    outline: 2px solid var.$primary-color;
     outline-offset: 2px;
   }
 

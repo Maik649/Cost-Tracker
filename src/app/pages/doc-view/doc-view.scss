@@ -1,4 +1,6 @@
 @use '../../../styles/_mixings.scss' as mixins;
+@use '../../../styles/var';
+
 
 .overview-heading {
   display: flex;
@@ -39,7 +41,7 @@
   input {
     min-height: 1.5rem;
     padding: 0.5rem 0.65rem;
-    border: 1px solid #00c9ff;
+    border: 1px solid var.$primary-color;
     border-radius: 0.4rem;
     font: inherit;
     font-size: clamp(0.85rem, 2.5vw, 1.25rem);

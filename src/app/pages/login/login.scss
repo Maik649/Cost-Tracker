@@ -15,11 +15,15 @@ section {
     position: absolute;
     animation: logoFadeIn 0.8s ease-in;
     transition: all 0.8s ease-in-out;
-    width: 150px;
-    height: 150px;
-    top: 0%;
+    width: 100px;
+    height: 100px;
+    top: 3%;
     left: auto;
     z-index: 1;
+    @include mixings.Brackpoints('small') {
+    width: 80px;
+    height: 80px;
+  }
   }
 }
 
@@ -88,6 +92,8 @@ form {
   @include mixings.Brackpoints('small') {
     width: calc(100% - 5rem);
     padding: 1rem;
+    min-height: 300px;
+    gap: 1rem;
   }
 }
 

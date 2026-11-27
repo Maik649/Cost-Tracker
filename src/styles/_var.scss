@@ -1,6 +1,6 @@
   @use './_mixings.scss' as mixins;
 
-  $primary-color: #5ea5c2;
+  $primary-color: #00c9ff;
   $secondary-color: #d4d4d4;
   $success-color: #28a745;
   $danger-color: #dc3545;
@@ -49,7 +49,7 @@
 
     @include mixins.Brackpoints('small') {
 
-      padding: 1rem 0.5rem;
+      padding: 0.5rem 0.5rem;
     }
   }
 

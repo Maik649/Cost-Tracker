@@ -23,10 +23,8 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: Dashboard,
-    
     data: {header: 'dashboard'},
-    
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'doc-view',
@@ -44,15 +42,18 @@ export const routes: Routes = [
     path: 'settings',
     component: Settings,
     canActivate: [authGuard],
+    data: { header: 'settings' },
   },
   {
     path: 'diagram',
     component: Diagram,
     canActivate: [authGuard],
+    data: { header: 'diagram' },
   },
   {
     path: 'privacy',
     component: PrivacyPolicy,
+    data: { header: 'privacy' },
   },
   {
     path: '**',

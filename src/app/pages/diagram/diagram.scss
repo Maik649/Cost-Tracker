@@ -1,3 +1,7 @@
+@use '../../../styles/_mixings.scss' as mixins;
+@use '../../../styles/var';
+
+
 .diagram-container {
   display: flex;
   flex-direction: column;
@@ -24,7 +28,7 @@
 .month-picker input {
   min-width: 14rem;
   padding: 0.5rem;
-  border: 1px solid #9ca3af;
+  border: 1px solid var.$primary-color;
   border-radius: 0.35rem;
   background-color: white;
   font: inherit;
@@ -60,7 +64,7 @@
 .bar-fill {
   height: 100%;
   border-radius: inherit;
-  background-color: #3568d4;
+  background-color:var.$primary-color;
 }
 
 .total {

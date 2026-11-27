@@ -9,7 +9,7 @@ import { SubHeader } from './components/sub-header/sub-header';
 import { NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 
-type HeaderVariant = 'dashboard' | 'add-cost' | 'doc-view' | 'none';
+type HeaderVariant = 'dashboard' | 'add-cost' | 'doc-view' | 'settings'| 'diagram' | 'privacy' |'none';
 
 @Component({
   selector: 'app-root',

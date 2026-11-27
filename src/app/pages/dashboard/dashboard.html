@@ -14,7 +14,12 @@
           
         </button> -->
     @if(auth.isAuthenticated()){
-    <section class="dashboard-section">
+    <section class="page ">
+      <div class="content-wrapper">
+        <div class="dashboard-section">
+
+        
+      
       <div class="dashboard-buttons">
         <app-button-components *ngFor="let button of buttons" class="button-gradient" [routerLink]="button.routerLink"
           [label]="button.label">
@@ -46,7 +51,8 @@
           </ul>
         }
       </div>
-     
+     </div>
+    </div>
     </section>
     }
   </mat-drawer-content>
