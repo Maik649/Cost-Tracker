@@ -13,17 +13,18 @@ section {
 
   .logo-image {
     position: absolute;
-    animation: logoFadeIn 0.8s ease-in;
-    transition: all 0.8s ease-in-out;
+    animation: logoFadeIn 1.3s ease-in;
+    transition: all 1.3s ease-in-out;
     width: 100px;
     height: 100px;
     top: 3%;
     left: auto;
     z-index: 1;
+
     @include mixings.Brackpoints('small') {
-    width: 80px;
-    height: 80px;
-  }
+      width: 80px;
+      height: 80px;
+    }
   }
 }
 
@@ -31,13 +32,14 @@ section {
   0% {
     transform: translate(0%, 300%) scale(2.5);
   }
-  50%{
-    
+
+  50% {
+
     transform: translate(0%, 300%) scale(2.5);
   }
 
-  75%{
-    
+  75% {
+
     transform: translate(0%, 300%) scale(2.5);
   }
 
@@ -47,7 +49,7 @@ section {
 }
 
 form {
-  @include mixings.fadeInLeft(0.9s);
+  @include mixings.fadeInLeft(1.5s);
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
@@ -66,7 +68,7 @@ form {
     width: 100%;
     text-align: center;
     color: white;
-    font-size: clamp(21px, 5vw, 36px);
+    font-size: clamp(36px, 5vw, 42px);
   }
 
   .form-field-wrapper {
@@ -102,14 +104,14 @@ form {
   display: block;
   color: var.$danger-color;
   font-size: 0.875rem;
-  height: 1rem;
+  height: auto;
 }
 
 .valid {
   display: block;
   color: var.$success-color;
   font-size: 0.875rem;
-  height: 1rem;
+  height: auto;
 }
 
 .register-footer-links {
@@ -148,8 +150,6 @@ form {
   p {
     color: white;
     margin: 0;
-
-
   }
 
   &>a {
@@ -157,7 +157,7 @@ form {
     display: flex;
     gap: 5px;
     text-decoration: none;
-    max-width: min-content;
+    max-width: max-content;
     color: white;
 
     &:hover {
@@ -176,3 +176,17 @@ form {
 .float-left {
   justify-content: flex-start;
 }
+
+  .loading-spinner-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background-color: rgba(0, 0, 0, 0.651);
+    z-index: 9999;
+  }
+
+  app-loading-spinner {
+    position: absolute;
+
+  }

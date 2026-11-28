@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
@@ -62,6 +63,14 @@ export class AuthService {
     );
     this.updateUser(credential.user);
     return credential.user;
+  }
+
+  async sendPasswordReset(email: string): Promise<void> {
+    await sendPasswordResetEmail(this.requireAuth(), email.trim());
+  }
+
+  isUnknownEmailError(error: unknown): boolean {
+    return error instanceof FirebaseError && error.code === 'auth/user-not-found';
   }
 
   async signUp(email: string, password: string): Promise<User> {
@@ -125,12 +134,16 @@ export class AuthService {
       case 'auth/unauthorized-domain':
         return 'Diese Domain ist in Firebase Authentication nicht freigegeben.';
       case 'auth/too-many-requests':
-        return 'Zu viele Versuche. Bitte warte kurz und versuche es erneut.';
+        return 'Firebase hat die Anmeldung wegen zu vieler Versuche vorübergehend eingeschränkt. Bitte warte etwas, bevor du es erneut versuchst. Eine genaue Restzeit wird von Firebase nicht mitgeteilt.';
       case 'auth/network-request-failed':
         return 'Firebase ist nicht erreichbar. Bitte prüfe deine Internetverbindung.';
       default:
         return `Firebase-Anmeldung fehlgeschlagen (${error.code}): ${error.message}`;
     }
+  }
+
+  isRateLimitError(error: unknown): boolean {
+    return error instanceof FirebaseError && error.code === 'auth/too-many-requests';
   }
 
   private requireAuth(): Auth {

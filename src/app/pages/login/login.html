@@ -1,4 +1,8 @@
+
+    
+
 <section>
+  
    <img class="logo-image" src="../assets/CT-logo-new.webp" alt="Cost Tracker Logo">
   <form class="" novalidate (submit)="onSubmit($event)">
     @if(isRegistering()){
@@ -41,6 +45,14 @@
           [class.valid]="submitted() && inForm.password().valid()" matInput>
       </mat-form-field>
 
+      @if (!isRegistering()) {
+      <div class="back-link-content">
+        <a href="#password-reset" role="button" [attr.aria-disabled]="loading()"
+          [attr.tabindex]="loading() ? -1 : 0" (click)="requestPasswordReset($event)"
+          (keydown.space)="requestPasswordReset($event)">Passwort vergessen?</a>
+      </div>
+      }
+
       @if (isRegistering()) {
       <mat-form-field>
         <mat-label for="confirmPassword">Passwort wiederholen:</mat-label>
@@ -53,14 +65,20 @@
     @if (isRegistering()) {
     <mat-checkbox class="privacy-policy-checkbox" [checked]="isPrivacy()" (change)="isPrivacy.set($event.checked)">
       Ich akzeptiere die <a class="privacy-policy-link" routerLink="/privacy"
-        (click)="$event.stopPropagation()">Datenschutzbestimmungen</a>
+        (click)="$event.stopPropagation()">Datenschutzerklärung</a>
     </mat-checkbox>
     }
     </div>
     <div class="form-button-content">
+    
       @if (message()) {
-      <p [class.invalid]="messageType() === 'error'" [class.valid]="messageType() === 'success'">
+      <p role="alert" aria-live="assertive" [class.invalid]="messageType() === 'error'"
+        [class.valid]="messageType() === 'success'">
+        @if (rateLimitActive()) {
+        <strong>{{ message() }}</strong>
+        } @else {
         {{ message() }}
+        }
       </p>
       }
       <button type="submit" class=" button-gradient" [disabled]="loading()">
@@ -72,19 +90,11 @@
       } @else {
       <button type="button" class=" button-gradient" (click)="continueAsGuest()" [disabled]="loading()">Gast
         Login</button>
-      <!-- <div class="register-footer-links">
-       
-        <a href="#register" role="button" class="register-link" [attr.aria-disabled]="loading()"
-          [attr.tabindex]="loading() ? -1 : 0" (click)="startRegistration($event)"
-          (keydown.space)="startRegistration($event)">Registrieren</a>
-      </div> -->
       }
 
     </div>
-
   </form>
-  @if (loading()) {
-  <app-loading-spinner />
+    @if (loading()) {
+    <app-loading-spinner />
   }
-
 </section>

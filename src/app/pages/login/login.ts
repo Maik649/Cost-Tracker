@@ -9,9 +9,6 @@ import { AuthService } from '../../services/auth.service';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatIconModule} from '@angular/material/icon';
 
-
-
-
 @Component({
   imports: [CommonModule, FormField, LoadingSpinner, MatInputModule, MatFormFieldModule, MatCheckboxModule, RouterLink, MatIconModule],
   standalone: true,
@@ -21,7 +18,6 @@ import {MatIconModule} from '@angular/material/icon';
   providers: [],
 })
 
-
 export class Login {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
@@ -29,6 +25,7 @@ export class Login {
   isPrivacy= signal(false);
   message = signal('');
   messageType = signal<'error' | 'success' | ''>('');
+  rateLimitActive = signal(false);
   submitted = signal(false);
   loading = signal(false);
   loginModel = signal({
@@ -42,6 +39,7 @@ export class Login {
     this.submitted.set(true);
     this.message.set('');
     this.messageType.set('');
+    this.rateLimitActive.set(false);
 
     if (this.inForm().invalid()) {
       return;
@@ -80,12 +78,44 @@ export class Login {
   async continueAsGuest(): Promise<void> {
     this.message.set('');
     this.messageType.set('');
+    this.rateLimitActive.set(false);
     this.loading.set(true);
     try {
       await this.auth.signInAsGuest();
       await this.navigateToDashboard();
     } catch (error) {
       this.showAuthError(error);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async requestPasswordReset(event?: Event): Promise<void> {
+    event?.preventDefault();
+    if (this.loading()) {
+      return;
+    }
+
+    this.message.set('');
+    this.messageType.set('');
+    this.rateLimitActive.set(false);
+
+    if (this.inForm.email().invalid()) {
+      this.message.set('Bitte gib zuerst eine gültige E-Mail-Adresse ein.');
+      this.messageType.set('error');
+      return;
+    }
+
+    this.loading.set(true);
+    try {
+      await this.auth.sendPasswordReset(this.loginModel().email);
+      this.showPasswordResetConfirmation();
+    } catch (error) {
+      if (this.auth.isUnknownEmailError(error)) {
+        this.showPasswordResetConfirmation();
+      } else {
+        this.showAuthError(error);
+      }
     } finally {
       this.loading.set(false);
     }
@@ -100,6 +130,7 @@ export class Login {
     this.isRegistering.set(true);
     this.message.set('');
     this.messageType.set('');
+    this.rateLimitActive.set(false);
     this.submitted.set(false);
     this.isPrivacy.set(false);
     this.loginModel.update(model => ({ ...model, confirmPassword: '' }));
@@ -109,6 +140,7 @@ export class Login {
     this.isRegistering.set(false);
     this.message.set('');
     this.messageType.set('');
+    this.rateLimitActive.set(false);
     this.submitted.set(false);
     this.isPrivacy.set(false);
     this.loginModel.update(model => ({ ...model, confirmPassword: '' }));
@@ -125,6 +157,12 @@ export class Login {
   private showAuthError(error: unknown): void {
     this.message.set(this.auth.authErrorMessage(error));
     this.messageType.set('error');
+    this.rateLimitActive.set(this.auth.isRateLimitError(error));
+  }
+
+  private showPasswordResetConfirmation(): void {
+    this.message.set('Wenn für diese E-Mail-Adresse ein Konto besteht, erhältst du in Kürze eine E-Mail zum Zurücksetzen des Passworts.');
+    this.messageType.set('success');
   }
 
    inForm = form(this.loginModel, (schemaPath) => {
@@ -149,3 +187,4 @@ export class Login {
   });
 });
 }
+
