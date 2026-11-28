@@ -7,7 +7,6 @@ import {
   currentMonthKey,
   occursInMonth,
 } from '../../models/cost-entry';
-import { SubHeader } from '../../components/sub-header/sub-header';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
 import { LoadingSpinner } from '../../components/loading-spinner/loading-spinner';
 
@@ -20,7 +19,7 @@ interface CategoryTotal {
 }
 
 @Component({
-  imports: [CommonModule, SubHeader, LoadingSpinner],
+  imports: [CommonModule, LoadingSpinner],
   selector: 'app-diagram',
   styleUrls: ['./diagram.scss'],
   templateUrl: './diagram.html',

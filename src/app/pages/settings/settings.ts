@@ -1,12 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ButtonComponents } from '../../components/button-components/button-components';
-import { SubHeader } from '../../components/sub-header/sub-header';
 import { createBackupJson, parseBackupJson } from '../../models/cost-entry';
 import { CostEntryStore } from '../../services/cost-entry-store.service';
 
 @Component({
   selector: 'app-settings',
-  imports: [ButtonComponents, SubHeader],
+  imports: [ButtonComponents],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
