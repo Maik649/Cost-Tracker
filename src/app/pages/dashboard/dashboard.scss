@@ -21,7 +21,7 @@ mat-drawer {
   flex-direction: column;
   justify-content: start;
   height: auto;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 135px);
   gap: 3rem;
   box-sizing: border-box;
 
@@ -35,7 +35,7 @@ mat-drawer {
   gap: 1rem;
   color: #ffffff;
   padding: 0 1rem;
-  @include mixins.fadeInBottom($time: 1.5s);
+  @include mixins.fadeInBottom($time: 1s);
 
   @include mixins.Brackpoints('small') {
     gap: 0.5rem;
@@ -75,7 +75,7 @@ mat-drawer {
   color: #241f1f;
   box-shadow: 6px 6px 15px #00c8ff54;
   transition: left 0.7s ease-in-out;
-  @include mixins.fadeInLeft(0.9s);
+  @include mixins.fadeInLeft(1.2s);
 
   h2 {
     margin: 0;
